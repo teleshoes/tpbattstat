@@ -25,8 +25,8 @@ import os
 import re
 import sys
 
-LED_EXEC = '/usr/local/sbin/led'
-LED_BATT_EXEC = '/usr/local/sbin/led-batt'
+LED_EXEC = '/usr/local/bin/led'
+LED_BATT_EXEC = '/usr/local/bin/led-batt'
 LED_DEV_DIR = '/sys/devices/platform/thinkpad_acpi/leds'
 LED_GREEN_DEV = LED_DEV_DIR + '/tpacpi:green:batt/brightness'
 LED_ORANGE_DEV = LED_DEV_DIR + '/tpacpi:orange:batt/brightness'
