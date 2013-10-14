@@ -54,10 +54,10 @@ class BattBalance():
     self.perhaps_force_discharge()
 
   def ensure_charging(self, batt_id):
-    previnhib0 = self.batt0.isChargeInhibited()
-    previnhib1 = self.batt1.isChargeInhibited()
-    charge0 = self.batt0.isCharging()
-    charge1 = self.batt1.isCharging()
+    previnhib0 = self.battStatus.batt0.isChargeInhibited()
+    previnhib1 = self.battStatus.batt1.isChargeInhibited()
+    charge0 = self.battStatus.batt0.isCharging()
+    charge1 = self.battStatus.batt1.isCharging()
     if batt_id == 0 and (previnhib0 or (not charge0 and not previnhib1)):
       if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
         smapi_set(1, 'inhibit_charge_minutes', '1')
