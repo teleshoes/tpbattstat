@@ -19,10 +19,11 @@
 # along with TPBattStatApplet. If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-from prefs import DischargeStrategy, ChargeStrategy
+from prefs import DischargeStrategy, ChargeStrategy, BalanceInterface
 import sys
 from subprocess import Popen
 
+TPACPI_BAT = 'tpacpi-bat'
 SMAPI_BATTACCESS = '/usr/bin/smapi-battaccess'
 
 def smapi_set(batt_id, prop, val):
@@ -32,6 +33,15 @@ def smapi_set(batt_id, prop, val):
     p.wait()
   except:
     msg = 'Could not set ' + prop + '=' + val + ' on bat ' + str(batt_id)
+    print >> sys.stderr, msg
+
+def tpacpi_set(batt_id, method, val=None):
+  try:
+    print >> sys.stderr, "setting BAT" + str(batt_id) + "/" + method + " => " + val
+    p = Popen([TPACPI_BAT, '-s', method, str(batt_id), val])
+    p.wait()
+  except:
+    msg = 'Could not set ' + method + '=' + val + ' on bat ' + str(batt_id)
     print >> sys.stderr, msg
 
 class BattBalance():
@@ -49,11 +59,19 @@ class BattBalance():
     charge0 = self.batt0.isCharging()
     charge1 = self.batt1.isCharging()
     if batt_id == 0 and (previnhib0 or (not charge0 and not previnhib1)):
-      smapi_set(1, 'inhibit_charge_minutes', '1')
-      smapi_set(0, 'inhibit_charge_minutes', '0')
+      if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+        smapi_set(1, 'inhibit_charge_minutes', '1')
+        smapi_set(0, 'inhibit_charge_minutes', '0')
+      elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
+        tpacpi_set(2, 'IC', '1')
+        tpacpi_set(1, 'IC', '0')
     elif batt_id == 1 and (previnhib1 or (not charge1 and not previnhib0)):
-      smapi_set(0, 'inhibit_charge_minutes', '1')
-      smapi_set(1, 'inhibit_charge_minutes', '0')
+      if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+        smapi_set(0, 'inhibit_charge_minutes', '1')
+        smapi_set(1, 'inhibit_charge_minutes', '0')
+      elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
+        tpacpi_set(1, 'IC', '1')
+        tpacpi_set(2, 'IC', '0')
 
   def perhaps_inhibit_charge(self):
     ac = self.battStatus.ac
@@ -70,9 +88,15 @@ class BattBalance():
     strategy = self.prefs['chargeStrategy']
     if should_not_inhibit or strategy == ChargeStrategy.SYSTEM:
       if b0.isChargeInhibited():
-        smapi_set(0, 'inhibit_charge_minutes', '0')
+        if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+          smapi_set(0, 'inhibit_charge_minutes', '0')
+        elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
+          tpacpi_set(1, "IC", 0)
       if b1.isChargeInhibited():
-        smapi_set(1, 'inhibit_charge_minutes', '0')
+        if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+          smapi_set(1, 'inhibit_charge_minutes', '0')
+        elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
+          tpacpi_set(2, "IC", 0)
     elif strategy == ChargeStrategy.LEAPFROG:
       if per1 - per0 > self.prefs['chargeLeapfrogThreshold']:
         self.ensure_charging(1)
@@ -140,6 +164,9 @@ class BattBalance():
     prevforce1 = b1.isForceDischarge()
 
     if prevforce0 != force0 or prevforce1 != force1:
-      smapi_set(0, 'force_discharge', '1' if force0 else '0')
-      smapi_set(1, 'force_discharge', '1' if force1 else '0')
-
+      if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+        smapi_set(0, 'force_discharge', '1' if force0 else '0')
+        smapi_set(1, 'force_discharge', '1' if force1 else '0')
+      elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
+        tpacpi_set(1, 'FD', '1' if force0 else '0')
+        tpacpi_set(2, 'FD', '1' if force1 else '0')
