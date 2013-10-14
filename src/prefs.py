@@ -34,6 +34,7 @@ State = enum('CHARGING', 'DISCHARGING', 'IDLE')
 DischargeStrategy = enum('SYSTEM', 'LEAPFROG', 'CHASING')
 ChargeStrategy = enum('SYSTEM', 'LEAPFROG', 'CHASING', 'BRACKETS')
 Interface = enum('SMAPI', 'ACPI', 'ACPI_OLD')
+BalanceInterface = enum('SMAPI', 'TPACPI')
 PowerUsage = enum('NOW', 'AVERAGE', 'OFF')
 
 def getPrefs():
@@ -43,6 +44,9 @@ def getPrefs():
   Pref("interface", "enum", "SMAPI",
     "Battery info interface (smapi/acpi)",
     Interface),
+  Pref("balanceInterface", "enum", "SMAPI",
+    "Interface for balancing batteries",
+    BalanceInterface),
 
   Pref("dischargeStrategy", "enum", "LEAPFROG",
     "Strategy for selecting battery to discharge",
