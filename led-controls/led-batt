@@ -44,11 +44,11 @@ my $usage = "Usage:
    $0 CMD CMD CMD ....
      CMDs get performed forever in a loop
      Valid CMDs are:
-     G  -  turn ON green led
-     g  -  turn OFF green led
-     O  -  turn ON orange led
-     o  -  turn OFF orange led
-     #  -  pause for '#' seconds {e.g. 0.1, 1.5, 30, 60.0}
+       G                turn ON green led
+       g                turn OFF green led
+       O                turn ON orange led
+       o                turn OFF orange led
+       <DELAY>          pause for 'DELAY' seconds {e.g. 0.1, 1.5, 30, 60.0}
      previous run pattern gets killed first
      e.g.: blink lights merrily
      $0 o g 0.1 O 0.1 o G 0.1 g 0.1 O G 0.1
