@@ -44,6 +44,8 @@ my $usage = "Usage:
    $0 CMD CMD CMD ....
      CMDs get performed forever in a loop
      Valid CMDs are:
+       <LED_NAME>-on    turn ON led named LED_NAME
+       <LED_NAME>-off   turn OFF led named LED_NAME
        G                turn ON green led
        g                turn OFF green led
        O                turn ON orange led
@@ -78,6 +80,8 @@ sub performCmd($){
       ($led, $onOff) = ("orange:batt", "on");
     }elsif($cmd =~ /^(o)$/){
       ($led, $onOff) = ("orange:batt", "off");
+    }elsif($cmd =~ /^([a-zA-Z0-9_:]+)-(on|off)$/){
+      ($led, $onOff) = ($1, $2);
     }else{
       die "UNKNOWN COMMAND: $cmd\n";
     }
@@ -101,7 +105,7 @@ sub main(@){
   }
 
   for my $cmd(@cmd){
-    die $usage if $cmd !~ /^G|g|O|o|\d+|\d*\.\d+)$/;
+    die $usage if $cmd !~ /^([a-zA-Z0-9_:]+-(on|off)|G|g|O|o|\d+|\d*\.\d+)$/;
   }
   killOthers();
   savePid();
