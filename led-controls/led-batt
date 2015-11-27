@@ -65,21 +65,24 @@ sub savePid(){
 
 sub performCmd($){
   my $cmd = shift;
-  if($cmd eq 'G'){
-    print "GREEN ON\n";
-    system "led green:batt 1 > /dev/null";
-  }elsif($cmd eq 'g'){
-    print "green off\n";
-    system "led green:batt 0 > /dev/null";
-  }elsif($cmd eq 'O'){
-    print "ORANGE ON\n";
-    system "led orange:batt 1 > /dev/null";
-  }elsif($cmd eq 'o'){
-    print "orange off\n";
-    system "led orange:batt 0 > /dev/null";
-  }elsif($cmd =~ /^(\d+|\d*\.\d+)$/){
-    print "Sleeping for $1 seconds\n";
+  if($cmd =~ /^(\d+|\d*\.\d+)$/){
+    print "  (sleeping for $1 seconds)\n";
     sleep $1;
+  }else{
+    my ($led, $onOff);
+    if($cmd =~ /^(G)$/){
+      ($led, $onOff) = ("green:batt", "on");
+    }elsif($cmd =~ /^(g)$/){
+      ($led, $onOff) = ("green:batt", "off");
+    }elsif($cmd =~ /^(O)$/){
+      ($led, $onOff) = ("orange:batt", "on");
+    }elsif($cmd =~ /^(o)$/){
+      ($led, $onOff) = ("orange:batt", "off");
+    }else{
+      die "UNKNOWN COMMAND: $cmd\n";
+    }
+    print " $led => $onOff\n";
+    system "led $led $onOff > /dev/null";
   }
 }
 
@@ -98,7 +101,7 @@ sub main(@){
   }
 
   for my $cmd(@cmd){
-    die $usage if $cmd !~ /^(o|O|g|G|\d+|\d*\.\d+)$/;
+    die $usage if $cmd !~ /^G|g|O|o|\d+|\d*\.\d+)$/;
   }
   killOthers();
   savePid();
