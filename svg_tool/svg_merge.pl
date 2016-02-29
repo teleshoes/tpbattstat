@@ -23,20 +23,37 @@
 use strict;
 use warnings;
 
+sub parseXml($);
+
 sub main(@){
-  die "Usage: SVG_IN_FILE SVG_IN_FILE SVG_OUT_FILE\n" if @_ != 3;
+  die "Usage: $0 SVG_OUT_FILE SVG_IN_FILE [SVG_IN_FILE]\n" if @_ < 2;
 
-  my $symFile = shift;
-  my $baseFile = shift;
-  my $destFile = shift;
+  my ($destFile, @srcFiles) = shift;
+  my @inFiles = @_;
 
-  open FH, "< $symFile" or die "could not read $symFile\n";
-  my $sym = join '', <FH>;
+  my ($firstPrefix, $firstSuffix);
+  my $newContents = "";
+  for my $file(@inFiles){
+    open FH, "< $file" or die "Could not read file: $file\n$!\n";
+    my $xml = join '', <FH>;
+    close FH;
+
+    my ($prefix, $contents, $suffix) = parseXml $xml;
+    $firstPrefix = $prefix if not defined $firstPrefix;
+    $firstSuffix = $suffix if not defined $firstSuffix;
+    $newContents .= ""
+      . "$contents\n"
+      ;
+  }
+  $newContents = $firstPrefix . $newContents . $firstSuffix;
+
+  open FH, "> $destFile" or die "Could not write file: $destFile\n$!\n";
+  print FH $newContents;
   close FH;
-  open FH, "< $baseFile" or die "could not read $baseFile\n";
-  my $base = join '', <FH>;
-  close FH;
+}
 
+sub parseXml($){
+  my $xml = shift;
 
   my $xmlAttRegex = qr/(?:
     \s*
@@ -54,7 +71,7 @@ sub main(@){
     \s*
   )/sx;
 
-  if($base !~ /
+  if($xml !~ /
     ^
     (.*)
     (< \s* svg $xmlAttRegex* >)
@@ -63,29 +80,10 @@ sub main(@){
     (.*)
     $
     /sx){
-    die "$baseFile is (probably?) malformed";
+    die "SVG file is (probably?) malformed";
   }
 
-  my $baseSvgContent = $3;
-
-  if($sym !~ /
-    ^
-    (.*)
-    (< \s* svg $xmlAttRegex* >)
-    (.*)
-    (< \s* \/ \s* svg \s* >)
-    (.*)
-    $
-    /sx){
-    die "$symFile is (probably?) malformed";
-  }
-
-
-  my $dest = "$1$2$3$baseSvgContent$4$5";
-
-  open FH, "> $destFile" or die "could not write $destFile\n";
-  print FH $dest;
-  close FH;
+  return ("$1$2", $3, "$4$5");
 }
 
 &main(@ARGV);
