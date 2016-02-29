@@ -24,6 +24,8 @@ use strict;
 use warnings;
 
 sub main(@){
+  die "Usage: SVG_IN_FILE SVG_IN_FILE SVG_OUT_FILE\n" if @_ != 3;
+
   my $symFile = shift;
   my $baseFile = shift;
   my $destFile = shift;
