@@ -24,6 +24,7 @@ use strict;
 use warnings;
 
 sub parseXml($);
+sub modifyIds($$);
 
 sub main(@){
   die "Usage: $0 SVG_OUT_FILE SVG_IN_FILE [SVG_IN_FILE]\n" if @_ < 2;
@@ -44,6 +45,8 @@ sub main(@){
     $firstSuffix = $suffix if not defined $firstSuffix;
 
     $count++;
+
+    $contents = modifyIds $contents, "file${count}_";
 
     my $fileName = $file;
     $fileName =~ s/.*\///;
@@ -95,6 +98,24 @@ sub parseXml($){
   }
 
   return ("$1$2", $3, "$4$5");
+}
+
+sub modifyIds($$){
+  my ($xml, $idPrefix) = @_;
+  my @ids = $xml =~ /\sid="(linearGradient\d+)"/g;
+
+  my %okIds = map {$_ => 1} @ids;
+  @ids = sort keys %okIds;
+
+  for my $id(@ids){
+    my $oldId = $id;
+    my $newId = "$idPrefix$id";
+    $xml =~ s/"$oldId"/"$newId"/g;
+    $xml =~ s/"#$oldId"/"#$newId"/g;
+    $xml =~ s/\($oldId\)/\($newId\)/g;
+    $xml =~ s/\(#$oldId\)/\(#$newId\)/g;
+  }
+  return $xml;
 }
 
 &main(@ARGV);
