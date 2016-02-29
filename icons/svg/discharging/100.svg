@@ -18,10 +18,12 @@
    sodipodi:docname="50.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.1">
+<!-- START: file1: discharging_symbol_svg -->
+
   <defs
      id="defs2395">
     <linearGradient
-       id="linearGradient3163">
+       id="file1_linearGradient3163">
       <stop
          style="stop-color:#ffffff;stop-opacity:0.49803922;"
          offset="0"
@@ -32,7 +34,7 @@
          id="stop3167" />
     </linearGradient>
     <linearGradient
-       id="linearGradient3256">
+       id="file1_linearGradient3256">
       <stop
          style="stop-color:#008a00;stop-opacity:1;"
          offset="0"
@@ -43,7 +45,7 @@
          id="stop3260" />
     </linearGradient>
     <linearGradient
-       id="linearGradient3182">
+       id="file1_linearGradient3182">
       <stop
          style="stop-color:#04cc00;stop-opacity:1;"
          offset="0"
@@ -66,8 +68,8 @@
        id="perspective2401" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3182"
-       id="linearGradient3188"
+       xlink:href="#file1_linearGradient3182"
+       id="file1_linearGradient3188"
        x1="0.35449189"
        y1="23.90625"
        x2="47.833008"
@@ -75,8 +77,8 @@
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3256"
-       id="linearGradient3262"
+       xlink:href="#file1_linearGradient3256"
+       id="file1_linearGradient3262"
        x1="-38.486519"
        y1="44"
        x2="7.9150895"
@@ -85,8 +87,8 @@
        gradientTransform="translate(39.285714,-19.857143)" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3256"
-       id="linearGradient3554"
+       xlink:href="#file1_linearGradient3256"
+       id="file1_linearGradient3554"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.7729061,0,0,0.5761837,35.95728,9.0088541)"
        x1="-38.486519"
@@ -95,8 +97,8 @@
        y2="44" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3163"
-       id="linearGradient3169"
+       xlink:href="#file1_linearGradient3163"
+       id="file1_linearGradient3169"
        x1="0.94874997"
        y1="23.96875"
        x2="47.350358"
@@ -125,7 +127,7 @@
        y1="0"
        x1="50"
        gradientUnits="userSpaceOnUse"
-       id="linearGradient3113"
+       id="file1_linearGradient3113"
        xlink:href="#red_shade"
        inkscape:collect="always" />
   </defs>
@@ -172,7 +174,7 @@
        cx="100"
        cy="100"
        r="99"
-       style="fill:url(#linearGradient3113);stroke:#8b0000;stroke-width:2"
+       style="fill:url(#file1_linearGradient3113);stroke:#8b0000;stroke-width:2"
        id="circle11"
        sodipodi:cx="100"
        sodipodi:cy="100"
@@ -190,10 +192,15 @@
      id="layer2"
      inkscape:label="100" />
 
+<!-- END: file1: discharging_symbol_svg -->
+
+
+<!-- START: file2: 100_svg -->
+
   <defs
      id="defs2395">
     <linearGradient
-       id="linearGradient3256">
+       id="file2_linearGradient3256">
       <stop
          style="stop-color:#008a00;stop-opacity:1;"
          offset="0"
@@ -204,7 +211,7 @@
          id="stop3260" />
     </linearGradient>
     <linearGradient
-       id="linearGradient3182">
+       id="file2_linearGradient3182">
       <stop
          style="stop-color:#04cc00;stop-opacity:1;"
          offset="0"
@@ -227,8 +234,8 @@
        id="perspective2401" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3182"
-       id="linearGradient3188"
+       xlink:href="#file2_linearGradient3182"
+       id="file2_linearGradient3188"
        x1="0.35449189"
        y1="23.90625"
        x2="47.833008"
@@ -236,8 +243,8 @@
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3256"
-       id="linearGradient3262"
+       xlink:href="#file2_linearGradient3256"
+       id="file2_linearGradient3262"
        x1="-38.486519"
        y1="44"
        x2="7.9150895"
@@ -283,7 +290,7 @@
        d="M 24.872721,0.62132906 C 21.068645,0.62132906 17.991213,1.0955322 17.991213,1.6680391 C 17.991213,1.8403037 18.290768,2.0008029 18.785233,2.1438165 L 17.919029,2.1438165 L 17.919029,4.0469256 L 6.6102577,4.0469256 L 6.6102577,44.963774 L 6.754625,44.963774 C 6.7299825,45.011693 6.7065026,45.041946 6.7065026,45.090647 C 6.7065026,46.308189 14.538479,47.310941 24.174946,47.310941 C 33.811411,47.310941 41.619329,46.308191 41.619327,45.090647 C 41.619327,45.041946 41.595848,45.011693 41.571205,44.963774 L 41.619327,44.963774 L 41.619327,4.0469256 L 31.826412,4.0469256 L 31.826412,2.1438165 L 30.98427,2.1438165 C 31.470318,2.0017577 31.77829,1.8387295 31.77829,1.6680391 C 31.77829,1.0955321 28.676796,0.62132905 24.872721,0.62132906 z"
        id="rect2385" />
     <path
-       style="opacity:1;fill:url(#linearGradient3262);fill-opacity:1;stroke:#000500;stroke-width:1.1395191;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:url(#file2_linearGradient3262);fill-opacity:1;stroke:#000500;stroke-width:1.1395191;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 24.757928,0.79805148 C 20.953852,0.79805148 17.87642,1.2722539 17.87642,1.8447609 C 17.87642,2.0170257 18.175975,2.1775255 18.67044,2.3205386 L 17.804236,2.3205386 L 17.804236,4.2236475 L 6.4954647,4.2236475 L 6.4954647,45.140495 L 6.6398327,45.140495 C 6.61519,45.188414 6.5917101,45.218668 6.5917101,45.267369 C 6.5917101,46.484911 14.423686,47.487663 24.060153,47.487663 C 33.696618,47.487663 41.504536,46.484913 41.504535,45.267369 C 41.504535,45.218668 41.481055,45.188414 41.456412,45.140495 L 41.504535,45.140495 L 41.504535,4.2236475 L 31.711619,4.2236475 L 31.711619,2.3205386 L 30.869477,2.3205386 C 31.355525,2.1784796 31.663497,2.0154514 31.663497,1.8447609 C 31.663497,1.2722539 28.562004,0.79805148 24.757928,0.79805148 z"
        id="path3552" />
   </g>
@@ -291,4 +298,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="100" />
+
+<!-- END: file2: 100_svg -->
+
 </svg>
