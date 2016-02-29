@@ -33,6 +33,7 @@ sub main(@){
 
   my ($firstPrefix, $firstSuffix);
   my $newContents = "";
+  my $count = 0;
   for my $file(@inFiles){
     open FH, "< $file" or die "Could not read file: $file\n$!\n";
     my $xml = join '', <FH>;
@@ -41,8 +42,18 @@ sub main(@){
     my ($prefix, $contents, $suffix) = parseXml $xml;
     $firstPrefix = $prefix if not defined $firstPrefix;
     $firstSuffix = $suffix if not defined $firstSuffix;
+
+    $count++;
+
+    my $fileName = $file;
+    $fileName =~ s/.*\///;
+    $fileName =~ s/[^a-zA-Z0-9]+/_/g;
     $newContents .= ""
+      . "\n"
+      . "<!-- START: file$count: $fileName -->\n"
       . "$contents\n"
+      . "<!-- END: file$count: $fileName -->\n"
+      . "\n"
       ;
   }
   $newContents = $firstPrefix . $newContents . $firstSuffix;
