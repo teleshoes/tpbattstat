@@ -23,63 +23,67 @@
 use strict;
 use warnings;
 
-my $symFile = shift;
-my $baseFile = shift;
-my $destFile = shift;
+sub main(@){
+  my $symFile = shift;
+  my $baseFile = shift;
+  my $destFile = shift;
 
-open FH, "< $symFile" or die "could not read $symFile\n";
-my $sym = join '', <FH>;
-close FH;
-open FH, "< $baseFile" or die "could not read $baseFile\n";
-my $base = join '', <FH>;
-close FH;
+  open FH, "< $symFile" or die "could not read $symFile\n";
+  my $sym = join '', <FH>;
+  close FH;
+  open FH, "< $baseFile" or die "could not read $baseFile\n";
+  my $base = join '', <FH>;
+  close FH;
 
 
-my $xmlAttRegex = qr/(?:
-  \s*
-  [a-zA-Z0-9_\-:]+
-  \s* = \s*
-  (?:
-    "
-      (?: [^"\\]* | \\" )*
-    "
-    |
-    \'
-      (?: [^'\\]* | \\' )*
-    \'
-  )
-  \s*
-)/sx;
+  my $xmlAttRegex = qr/(?:
+    \s*
+    [a-zA-Z0-9_\-:]+
+    \s* = \s*
+    (?:
+      "
+        (?: [^"\\]* | \\" )*
+      "
+      |
+      \'
+        (?: [^'\\]* | \\' )*
+      \'
+    )
+    \s*
+  )/sx;
 
-if($base !~ /
-  ^
-  (.*)
-  (< \s* svg $xmlAttRegex* >)
-  (.*)
-  (< \s* \/ \s* svg \s* >)
-  (.*)
-  $
-  /sx){
-  die "$baseFile is (probably?) malformed";
+  if($base !~ /
+    ^
+    (.*)
+    (< \s* svg $xmlAttRegex* >)
+    (.*)
+    (< \s* \/ \s* svg \s* >)
+    (.*)
+    $
+    /sx){
+    die "$baseFile is (probably?) malformed";
+  }
+
+  my $baseSvgContent = $3;
+
+  if($sym !~ /
+    ^
+    (.*)
+    (< \s* svg $xmlAttRegex* >)
+    (.*)
+    (< \s* \/ \s* svg \s* >)
+    (.*)
+    $
+    /sx){
+    die "$symFile is (probably?) malformed";
+  }
+
+
+  my $dest = "$1$2$3$baseSvgContent$4$5";
+
+  open FH, "> $destFile" or die "could not write $destFile\n";
+  print FH $dest;
+  close FH;
 }
 
-my $baseSvgContent = $3;
-
-if($sym !~ /
-  ^
-  (.*)
-  (< \s* svg $xmlAttRegex* >)
-  (.*)
-  (< \s* \/ \s* svg \s* >)
-  (.*)
-  $
-  /sx){
-  die "$symFile is (probably?) malformed";
-}
-
-
-my $dest = "$1$2$3$baseSvgContent$4$5";
-
-open FH, "> $destFile" or die "could not write $destFile\n";
-print FH $dest;
-close FH;
+&main(@ARGV);
