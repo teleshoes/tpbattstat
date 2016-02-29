@@ -84,11 +84,11 @@ sub parseXml($){
 
   if($xml !~ /
     ^
-    (.*)
-    (< \s* svg $xmlAttRegex* >)
-    (.*)
-    (< \s* \/ \s* svg \s* >)
-    (.*)
+    (.*)                         #before svg tag
+    (< \s* svg $xmlAttRegex* >)  #svg open tag
+    (.*)                         #content
+    (< \s* \/ \s* svg \s* >)     #svg close tag
+    (.*)                         #after svg close tag
     $
     /sx){
     die "SVG file is (probably?) malformed";
