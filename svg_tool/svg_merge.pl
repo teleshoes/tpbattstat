@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 ########################################################################
-#SVG merging tool v0.1
-#Copyright 2011 Elliot Wolk
+#SVG merging tool v0.2
+#Copyright 2011,2016 Elliot Wolk
 #
-#Very simple tool for placing objects from one SVG file into another.
+#Very simple tool for smooshing SVG files together.
 #
 ########################################################################
 #This program is free software: you can redistribute it and/or modify
