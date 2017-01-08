@@ -11,12 +11,21 @@ sub run(@){
 
 sub convertRsvg($$$){
   my ($src, $dest, $h) = @_;
-  run "rsvg",
-    "-h", $h,
-    "-a",
-    "-f", "png",
-    "-o", $dest,
-    $src, "$dest";
+  if(`which rsvg-convert` =~ /rsvg-convert/){
+    run "rsvg-convert",
+      "-h", $h,
+      "-a",
+      "-f", "png",
+      "-o", $dest,
+      $src;
+  }elsif(`which rsvg` =~ /rsvg/){
+    run "rsvg",
+      "-h", $h,
+      "-a",
+      "-f", "png",
+      "-o", $dest,
+      $src, "$dest";
+  }
 }
 sub convertImageMagick($$$){
   my ($src, $dest, $h) = @_;
