@@ -13,6 +13,9 @@ sub readDev($);
 sub writeDev($$);
 
 my %synonyms = (
+  mic      => [qw(micmute mute_mic)],
+  micmute  => [qw(mute_mic)],
+  mute_mic => [qw(micmute)],
 );
 my $synonymsFmt = join '', map {"\n      $_ => (@{$synonyms{$_}})"} sort keys %synonyms;
 
