@@ -29,6 +29,9 @@ my $usage = "Usage:
      print available LED names:
        @validLeds
 
+  $EXEC LED_NAME --dev|--device|-d
+     print the full path to the LED brightness device
+
   $EXEC LED_NAME --get
     read current value of the LED brightness device
 
@@ -89,6 +92,10 @@ sub main(@){
       writeDev $dev, $brightness;
       my $newValue = readDev $dev;
       print "LED $ledName $oldValue => $newValue\n";
+    }elsif($cmd =~ /^(--dev|--device|-d)$/){
+      my $dev = getDeviceByLEDName $ledName;
+      die "ERROR: could not find $ledName in $LED_DIR\n" if not defined $dev;
+      print "$dev\n";
     }else{
       die "invalid command: $cmd\n";
     }
