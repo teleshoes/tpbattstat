@@ -42,10 +42,12 @@ my $usage = "Usage:
        $LED_DIR/<led-name>/brightness
        $LED_DIR/tpacpi:<led-name>/brightness
        $LED_DIR/tpacpi::<led-name>/brightness
+       $LED_DIR/platform::<led-name>/brightness
 
     e.g.:
       -'green:batt' can match 'tpacpi:green:batt'
       -'mute_mic' can match 'tpacpi::mute_mic'
+      -'micmute' can match 'platform::micmute'
 ";
 
 sub main(@){
@@ -101,6 +103,7 @@ sub getDeviceByLEDName($){
     "$LED_DIR/$ledName/brightness",
     "$LED_DIR/tpacpi:$ledName/brightness",
     "$LED_DIR/tpacpi::$ledName/brightness",
+    "$LED_DIR/platform::$name/brightness",
   );
 
   for my $dev(@possibleDevs){
@@ -113,7 +116,7 @@ sub getLEDNames(){
   my @ledDevs = glob "$LED_DIR/*/brightness";
   my @ledNames = @ledDevs;
   @ledNames = map {s/^$LED_DIR\/([^\/]+)\/brightness$/$1/; $_} @ledDevs;
-  @ledNames = map {s/^(tpacpi::|tpacpi:)//; $_} @ledDevs;
+  @ledNames = map {s/^(tpacpi::|tpacpi:|platform::)//; $_} @ledDevs;
   return @ledNames;
 }
 
