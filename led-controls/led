@@ -12,6 +12,10 @@ sub getLEDNames();
 sub readDev($);
 sub writeDev($$);
 
+my %synonyms = (
+);
+my $synonymsFmt = join '', map {"\n      $_ => (@{$synonyms{$_}})"} sort keys %synonyms;
+
 my @validLeds = getLEDNames();
 
 my $usage = "Usage:
@@ -43,6 +47,7 @@ my $usage = "Usage:
        $LED_DIR/tpacpi:<led-name>/brightness
        $LED_DIR/tpacpi::<led-name>/brightness
        $LED_DIR/platform::<led-name>/brightness
+    -if no LED device is found, the following synonyms are tried:$synonymsFmt
 
     e.g.:
       -'green:batt' can match 'tpacpi:green:batt'
@@ -99,13 +104,20 @@ sub ensureRoot(){
 sub getDeviceByLEDName($){
   my ($ledName) = @_;
 
-  my @possibleDevs = (
-    "$LED_DIR/$ledName/brightness",
-    "$LED_DIR/tpacpi:$ledName/brightness",
-    "$LED_DIR/tpacpi::$ledName/brightness",
-    "$LED_DIR/platform::$name/brightness",
-  );
+  my @synonyms = ($ledName);
+  if(defined $synonyms{$ledName}){
+    @synonyms = (@synonyms, @{$synonyms{$ledName}});
+  }
 
+  my @possibleDevs;
+  for my $name(@synonyms){
+    @possibleDevs = (@possibleDevs,
+      "$LED_DIR/$name/brightness",
+      "$LED_DIR/tpacpi:$name/brightness",
+      "$LED_DIR/tpacpi::$name/brightness",
+      "$LED_DIR/platform::$name/brightness",
+    );
+  }
   for my $dev(@possibleDevs){
     return $dev if -e $dev;
   }
