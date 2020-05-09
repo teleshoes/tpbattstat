@@ -31,16 +31,7 @@ my %synonyms = @synonymsArr;
 sub performCmd($);
 sub killPidfile();
 sub savePid();
-
-my $synonymUsage = "$0 CMD_LOOP_SYNONYMS\n" .
-  "      single-arg shorthand for a series of commands\n";
-my $maxLen = max(map {length} keys %synonyms);
-for(my $i=0; $i<@synonymsArr; $i+=2){
-  my $name = $synonymsArr[$i];
-  my @cmd = @{$synonyms{$name}};
-  $name .= ' ' x ($maxLen - length $name);
-  $synonymUsage .= "      $name => (@cmd)\n";
-}
+sub formatSynonymsUsage();
 
 my $EXEC = basename $0;
 my $LED_CMD = "led";
@@ -54,7 +45,11 @@ Turn LEDs on/off with a specified pattern using `$LED_CMD`
    $EXEC --stop
      kills the process in pidfile $pidfile
 
-   $synonymUsage
+   $EXEC SYNONYM
+     run the pattern in <SYNONYM>
+
+     SYNONYM\n" . formatSynonymsUsage() . "
+
    $EXEC CMD CMD CMD ....
      CMDs get performed forever in a loop
      kills the process in pidfile $pidfile and writes pid to pidfile,
@@ -139,6 +134,20 @@ sub killPidfile(){
 }
 sub savePid(){
   system "echo $$ > $pidfile";
+}
+
+sub formatSynonymsUsage(){
+  my $fmt = "";
+  my $maxLen = max(map {length} keys %synonyms);
+
+  for(my $i=0; $i<@synonymsArr; $i+=2){
+    my $name = $synonymsArr[$i];
+    my @cmd = @{$synonyms{$name}};
+    $name .= ' ' x ($maxLen - length $name);
+    $fmt .= "      $name   =>   @cmd\n";
+  }
+
+  return $fmt;
 }
 
 &main(@ARGV);
