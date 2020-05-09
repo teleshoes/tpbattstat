@@ -46,13 +46,17 @@ my $EXEC = basename $0;
 my $LED_CMD = "led";
 
 my $usage = "Usage:
+Turn LEDs on/off with a specified pattern using `$LED_CMD`
+
    $EXEC --stop
-     kill the currently running pattern
+     kills the process in pidfile $pidfile
 
    $synonymUsage
    $EXEC CMD CMD CMD ....
      CMDs get performed forever in a loop
-     Valid CMDs are:
+     kills the process in pidfile $pidfile and writes pid to pidfile,
+       before running commands
+     CMD:
        <LED_NAME>-on    turn ON led named LED_NAME
        <LED_NAME>-off   turn OFF led named LED_NAME
        G                turn ON green led
@@ -60,7 +64,6 @@ my $usage = "Usage:
        O                turn ON orange led
        o                turn OFF orange led
        <DELAY>          pause for 'DELAY' seconds {e.g. 0.1, 1.5, 30, 60.0}
-     previous run pattern gets killed first
      e.g.: blink lights merrily
      $EXEC o g 0.1 O 0.1 o G 0.1 g 0.1 O G 0.1
 ";
