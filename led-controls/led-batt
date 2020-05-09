@@ -20,7 +20,7 @@ my @synonymsArr = (
   'slowblink-orange' => [qw(g O 3 o 3)],
   'blink-orange' => [qw(g O 1 o 1)],
   'fastblink-orange' => [qw(g O 0.1 o 0.1)],
-  'fastblink-orange-and-power' => [qw(g O 0.1 o power-off 0.1 power-on)],
+  'fastblink-orange-and-power' => [qw(g O 0.1 o p 0.1 P)],
 
   'slowblink-both' => [qw(G O 3 g o 3)],
   'blink-both' => [qw(G O 1 g o 1)],
@@ -60,6 +60,8 @@ my $usage = "Usage:
        g                \"green:batt-off\"  - turn OFF green led
        O                \"orange:batt-on\"  - turn ON orange led
        o                \"orange:batt-off\" - turn OFF orange led
+       P                \"power-on\"        - turn ON power led
+       p                \"power-off\"       - turn OFF power led
        <SYNONYM>        run the sequence of commands in SYNONYM
 
      SYNONYM:\n" . formatSynonymsUsage() . "
@@ -123,6 +125,10 @@ sub parseCmdStr($){
     @cmds = ({cmd=>"on", led=>"orange:batt"});
   }elsif($cmdStr =~ /^o$/){
     @cmds = ({cmd=>"off", led=>"orange:batt"});
+  }elsif($cmdStr =~ /^P$/){
+    @cmds = ({cmd=>"on", led=>"power"});
+  }elsif($cmdStr =~ /^p$/){
+    @cmds = ({cmd=>"off", led=>"power"});
   }elsif(defined $synonyms{$cmdStr}){
     @cmds = map {parseCmdStr $_} @{$synonyms{$cmdStr}};
   }else{
