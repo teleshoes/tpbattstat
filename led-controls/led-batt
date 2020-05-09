@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use File::Basename qw(basename);
 use Time::HiRes qw(sleep);
 use List::Util qw(max);
 
@@ -41,12 +42,14 @@ for(my $i=0; $i<@synonymsArr; $i+=2){
   $synonymUsage .= "      $name => (@cmd)\n";
 }
 
+my $EXEC = basename $0;
+
 my $usage = "Usage:
-   $0 --stop
+   $EXEC --stop
      kill the currently running pattern
 
    $synonymUsage
-   $0 CMD CMD CMD ....
+   $EXEC CMD CMD CMD ....
      CMDs get performed forever in a loop
      Valid CMDs are:
        <LED_NAME>-on    turn ON led named LED_NAME
@@ -58,7 +61,7 @@ my $usage = "Usage:
        <DELAY>          pause for 'DELAY' seconds {e.g. 0.1, 1.5, 30, 60.0}
      previous run pattern gets killed first
      e.g.: blink lights merrily
-     $0 o g 0.1 O 0.1 o G 0.1 g 0.1 O G 0.1
+     $EXEC o g 0.1 O 0.1 o G 0.1 g 0.1 O G 0.1
 ";
 
 sub main(@){
