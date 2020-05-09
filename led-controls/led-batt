@@ -50,8 +50,8 @@ my $usage = "Usage:
 
      SYNONYM\n" . formatSynonymsUsage() . "
 
-   $EXEC CMD CMD CMD ....
-     CMDs get performed forever in a loop
+   $EXEC [OPTS] CMD CMD CMD ....
+     CMDs get performed forever in a loop (or once with --once)
      kills the process in pidfile $pidfile and writes pid to pidfile,
        before running commands
      CMD:
@@ -64,14 +64,25 @@ my $usage = "Usage:
        o                \"orange:batt-off\" - turn OFF orange led
      e.g.: blink lights merrily
      $EXEC o g 0.1 O 0.1 o G 0.1 g 0.1 O G 0.1
+
+     OPTS
+       --loop
+         run this sequence forever (default)
+       -o | --once
+         run this sequence once, and exit
 ";
 
 sub main(@){
-  while(@_ > 0 and $_[0] =~ /^(-h|--help)$/){
+  my $once = 0;
+  while(@_ > 0 and $_[0] =~ /^(-h|--help|--loop|-o|--once)$/){
     my $opt = shift;
     if($opt =~ /^-h|--help$/){
       print $usage;
       exit 0;
+    }elsif($opt =~ /^(--loop)$/){
+      $once = 0;
+    }elsif($opt =~ /^(-o|--once)$/){
+      $once = 1;
     }else{
       die "$usage\nERROR: unknown option $opt\n";
     }
@@ -99,6 +110,7 @@ sub main(@){
   savePid();
   while(1){
     performCmd $_ foreach @cmd;
+    exit 0 if $once;
   }
 }
 
