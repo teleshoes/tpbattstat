@@ -26,8 +26,10 @@ my @synonymsArr = (
   'blink-both' => [qw(G O 1 g o 1)],
   'fastblink-both' => [qw(G O 0.1 g o 0.1)],
 );
+
 my %synonyms = @synonymsArr;
 
+sub parseCmdStr($);
 sub performCmd($);
 sub killPidfile();
 sub savePid();
@@ -45,15 +47,11 @@ my $usage = "Usage:
    $EXEC --stop
      kills the process in pidfile $pidfile
 
-   $EXEC SYNONYM
-     run the pattern in <SYNONYM>
-
-     SYNONYM\n" . formatSynonymsUsage() . "
-
    $EXEC [OPTS] CMD CMD CMD ....
      CMDs get performed forever in a loop (or once with --once)
      kills the process in pidfile $pidfile and writes pid to pidfile,
        before running commands
+
      CMD:
        <LED_NAME>-on    turn ON led named LED_NAME
        <LED_NAME>-off   turn OFF led named LED_NAME
@@ -62,8 +60,9 @@ my $usage = "Usage:
        g                \"green:batt-off\"  - turn OFF green led
        O                \"orange:batt-on\"  - turn ON orange led
        o                \"orange:batt-off\" - turn OFF orange led
-     e.g.: blink lights merrily
-     $EXEC o g 0.1 O 0.1 o G 0.1 g 0.1 O G 0.1
+       <SYNONYM>        run the sequence of commands in SYNONYM
+
+     SYNONYM:\n" . formatSynonymsUsage() . "
 
      OPTS
        --loop
@@ -92,16 +91,10 @@ sub main(@){
     killPidfile();
     exit;
   }
-  my @cmd;
-  if(@_ == 1 and defined $synonyms{$_[0]}){
-     @cmd = @{$synonyms{$_[0]}};
-     print "$_[0] => @cmd\n";
-  }else{
-    @cmd = @_;
-  }
 
-  for my $cmd(@cmd){
-    die $usage if $cmd !~ /^([a-zA-Z0-9_:]+-(on|off)|G|g|O|o|\d+|\d*\.\d+)$/;
+  my @cmds;
+  for my $cmdStr(@_){
+    @cmds = (@cmds, parseCmdStr $cmdStr);
   }
 
   die "$usage\nERROR: no CMD given\n" if @cmds == 0;
@@ -109,33 +102,46 @@ sub main(@){
   killPidfile();
   savePid();
   while(1){
-    performCmd $_ foreach @cmd;
+    performCmd $_ foreach @cmds;
     exit 0 if $once;
   }
 }
 
-sub performCmd($){
-  my $cmd = shift;
-  if($cmd =~ /^(\d+|\d*\.\d+)$/){
-    print "  (sleeping for $1 seconds)\n";
-    sleep $1;
+sub parseCmdStr($){
+  my ($cmdStr) = @_;
+
+  my @cmds;
+  if($cmdStr =~ /^([a-zA-Z0-9_:]+)-(on|off)$/){
+    @cmds = ({cmd=>$1, led=>$2});
+  }elsif($cmdStr =~ /^(\d+|\d*\.\d+)$/){
+    @cmds = ({cmd=>"sleep", delay=>$1});
+  }elsif($cmdStr =~ /^G$/){
+    @cmds = ({cmd=>"on", led=>"green:batt"});
+  }elsif($cmdStr =~ /^g$/){
+    @cmds = ({cmd=>"off", led=>"green:batt"});
+  }elsif($cmdStr =~ /^O$/){
+    @cmds = ({cmd=>"on", led=>"orange:batt"});
+  }elsif($cmdStr =~ /^o$/){
+    @cmds = ({cmd=>"off", led=>"orange:batt"});
+  }elsif(defined $synonyms{$cmdStr}){
+    @cmds = map {parseCmdStr $_} @{$synonyms{$cmdStr}};
   }else{
-    my ($led, $onOff);
-    if($cmd =~ /^(G)$/){
-      ($led, $onOff) = ("green:batt", "on");
-    }elsif($cmd =~ /^(g)$/){
-      ($led, $onOff) = ("green:batt", "off");
-    }elsif($cmd =~ /^(O)$/){
-      ($led, $onOff) = ("orange:batt", "on");
-    }elsif($cmd =~ /^(o)$/){
-      ($led, $onOff) = ("orange:batt", "off");
-    }elsif($cmd =~ /^([a-zA-Z0-9_:]+)-(on|off)$/){
-      ($led, $onOff) = ($1, $2);
-    }else{
-      die "UNKNOWN COMMAND: $cmd\n";
-    }
-    print " $led => $onOff\n";
-    system "$LED_CMD $led $onOff > /dev/null";
+    die "$usage\nERROR: unknown command $cmdStr\n";
+  }
+
+  return @cmds;
+}
+
+sub performCmd($){
+  my ($cmd) = @_;
+  if($$cmd{cmd} eq "on"){
+    system "$LED_CMD $$cmd{led} on > /dev/null";
+  }elsif($$cmd{cmd} eq "off"){
+    system "$LED_CMD $$cmd{led} off > /dev/null";
+  }elsif($$cmd{cmd} eq "sleep"){
+    sleep $$cmd{delay};
+  }else{
+    die "ERROR: unknown cmd\n";
   }
 }
 
