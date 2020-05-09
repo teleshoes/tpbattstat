@@ -72,7 +72,6 @@ Turn LEDs on/off with a specified pattern using `$LED_CMD`
 ";
 
 sub main(@){
-  die $usage if @_ == 0;
   while(@_ > 0 and $_[0] =~ /^(-h|--help)$/){
     my $opt = shift;
     if($opt =~ /^-h|--help$/){
@@ -98,6 +97,9 @@ sub main(@){
   for my $cmd(@cmd){
     die $usage if $cmd !~ /^([a-zA-Z0-9_:]+-(on|off)|G|g|O|o|\d+|\d*\.\d+)$/;
   }
+
+  die "$usage\nERROR: no CMD given\n" if @cmds == 0;
+
   killPidfile();
   savePid();
   while(1){
