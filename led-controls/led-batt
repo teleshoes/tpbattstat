@@ -43,6 +43,7 @@ for(my $i=0; $i<@synonymsArr; $i+=2){
 }
 
 my $EXEC = basename $0;
+my $LED_CMD = "led";
 
 my $usage = "Usage:
    $EXEC --stop
@@ -109,7 +110,7 @@ sub performCmd($){
       die "UNKNOWN COMMAND: $cmd\n";
     }
     print " $led => $onOff\n";
-    system "led $led $onOff > /dev/null";
+    system "$LED_CMD $led $onOff > /dev/null";
   }
 }
 
