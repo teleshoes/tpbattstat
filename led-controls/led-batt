@@ -27,6 +27,10 @@ my @synonymsArr = (
 );
 my %synonyms = @synonymsArr;
 
+sub performCmd($);
+sub killOthers();
+sub savePid();
+
 my $synonymUsage = "$0 CMD_LOOP_SYNONYMS\n" .
   "      single-arg shorthand for a series of commands\n";
 my $maxLen = max(map {length} keys %synonyms);
@@ -57,13 +61,28 @@ my $usage = "Usage:
      $0 o g 0.1 O 0.1 o G 0.1 g 0.1 O G 0.1
 ";
 
-sub killOthers(){
-  if(-e $pidfile){
-    system "kill -9 `cat $pidfile` 2>/dev/null";
+sub main(@){
+  die $usage if @_ == 0;
+  if(@_ == 1 and $_[0] eq '--stop'){
+    killOthers();
+    exit;
   }
-}
-sub savePid(){
-  system "echo $$ > $pidfile";
+  my @cmd;
+  if(@_ == 1 and defined $synonyms{$_[0]}){
+     @cmd = @{$synonyms{$_[0]}};
+     print "$_[0] => @cmd\n";
+  }else{
+    @cmd = @_;
+  }
+
+  for my $cmd(@cmd){
+    die $usage if $cmd !~ /^([a-zA-Z0-9_:]+-(on|off)|G|g|O|o|\d+|\d*\.\d+)$/;
+  }
+  killOthers();
+  savePid();
+  while(1){
+    performCmd $_ foreach @cmd;
+  }
 }
 
 sub performCmd($){
@@ -91,28 +110,13 @@ sub performCmd($){
   }
 }
 
-sub main(@){
-  die $usage if @_ == 0;
-  if(@_ == 1 and $_[0] eq '--stop'){
-    killOthers();
-    exit;
+sub killOthers(){
+  if(-e $pidfile){
+    system "kill -9 `cat $pidfile` 2>/dev/null";
   }
-  my @cmd;
-  if(@_ == 1 and defined $synonyms{$_[0]}){
-     @cmd = @{$synonyms{$_[0]}};
-     print "$_[0] => @cmd\n";
-  }else{
-    @cmd = @_;
-  }
-
-  for my $cmd(@cmd){
-    die $usage if $cmd !~ /^([a-zA-Z0-9_:]+-(on|off)|G|g|O|o|\d+|\d*\.\d+)$/;
-  }
-  killOthers();
-  savePid();
-  while(1){
-    performCmd $_ foreach @cmd;
-  }
+}
+sub savePid(){
+  system "echo $$ > $pidfile";
 }
 
 &main(@ARGV);
