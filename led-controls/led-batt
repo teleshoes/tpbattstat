@@ -48,6 +48,9 @@ my $LED_CMD = "led";
 my $usage = "Usage:
 Turn LEDs on/off with a specified pattern using `$LED_CMD`
 
+   $EXEC -h | --help
+     print this message
+
    $EXEC --stop
      kills the process in pidfile $pidfile
 
@@ -70,6 +73,16 @@ Turn LEDs on/off with a specified pattern using `$LED_CMD`
 
 sub main(@){
   die $usage if @_ == 0;
+  while(@_ > 0 and $_[0] =~ /^(-h|--help)$/){
+    my $opt = shift;
+    if($opt =~ /^-h|--help$/){
+      print $usage;
+      exit 0;
+    }else{
+      die "$usage\nERROR: unknown option $opt\n";
+    }
+  }
+
   if(@_ == 1 and $_[0] eq '--stop'){
     killPidfile();
     exit;
