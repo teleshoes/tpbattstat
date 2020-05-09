@@ -37,7 +37,7 @@ my $EXEC = basename $0;
 my $LED_CMD = "led";
 
 my $usage = "Usage:
-Turn LEDs on/off with a specified pattern using `$LED_CMD`
+   Turn LEDs on/off with a specified pattern using `$LED_CMD`
 
    $EXEC -h | --help
      print this message
@@ -57,11 +57,11 @@ Turn LEDs on/off with a specified pattern using `$LED_CMD`
      CMD:
        <LED_NAME>-on    turn ON led named LED_NAME
        <LED_NAME>-off   turn OFF led named LED_NAME
-       G                turn ON green led
-       g                turn OFF green led
-       O                turn ON orange led
-       o                turn OFF orange led
        <DELAY>          pause for 'DELAY' seconds {e.g. 0.1, 1.5, 30, 60.0}
+       G                \"green:batt-on\"   - turn ON green led
+       g                \"green:batt-off\"  - turn OFF green led
+       O                \"orange:batt-on\"  - turn ON orange led
+       o                \"orange:batt-off\" - turn OFF orange led
      e.g.: blink lights merrily
      $EXEC o g 0.1 O 0.1 o G 0.1 g 0.1 O G 0.1
 ";
