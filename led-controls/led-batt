@@ -29,7 +29,7 @@ my @synonymsArr = (
 my %synonyms = @synonymsArr;
 
 sub performCmd($);
-sub killOthers();
+sub killPidfile();
 sub savePid();
 
 my $synonymUsage = "$0 CMD_LOOP_SYNONYMS\n" .
@@ -68,7 +68,7 @@ my $usage = "Usage:
 sub main(@){
   die $usage if @_ == 0;
   if(@_ == 1 and $_[0] eq '--stop'){
-    killOthers();
+    killPidfile();
     exit;
   }
   my @cmd;
@@ -82,7 +82,7 @@ sub main(@){
   for my $cmd(@cmd){
     die $usage if $cmd !~ /^([a-zA-Z0-9_:]+-(on|off)|G|g|O|o|\d+|\d*\.\d+)$/;
   }
-  killOthers();
+  killPidfile();
   savePid();
   while(1){
     performCmd $_ foreach @cmd;
@@ -114,7 +114,7 @@ sub performCmd($){
   }
 }
 
-sub killOthers(){
+sub killPidfile(){
   if(-e $pidfile){
     system "kill -9 `cat $pidfile` 2>/dev/null";
   }
