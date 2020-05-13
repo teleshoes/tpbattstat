@@ -8,10 +8,10 @@ use List::Util qw(max);
 my $pidfile = "/tmp/led-batt-pid";
 
 my @synonymsArr = (
-  'off' => [qw(o g 60)],
-  'green' => [qw(o G 60)],
-  'orange' => [qw(g O 60)],
-  'both' => [qw(G O 60)],
+  'off' => [qw(p o g 60)],
+  'green' => [qw(p o G 60)],
+  'orange' => [qw(p O g 60)],
+  'both' => [qw(p G O 60)],
 
   'slowblink-green' => [qw(o G 3 g 3)],
   'blink-green' => [qw(o G 1 g 1)],
