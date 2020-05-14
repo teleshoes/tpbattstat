@@ -111,6 +111,7 @@ sub main(@){
     performCmd {cmd=>"off", led=>$led};
   }
 
+  print "\nstarting loop:\n";
   while(1){
     performCmd $_ foreach @cmds;
     exit 0 if $once;
@@ -149,10 +150,11 @@ sub parseCmdStr($){
 sub performCmd($){
   my ($cmd) = @_;
   if($$cmd{cmd} eq "on"){
-    system "$LED_CMD $$cmd{led} on > /dev/null";
+    system "$LED_CMD $$cmd{led} on";
   }elsif($$cmd{cmd} eq "off"){
-    system "$LED_CMD $$cmd{led} off > /dev/null";
+    system "$LED_CMD $$cmd{led} off";
   }elsif($$cmd{cmd} eq "sleep"){
+    print "  sleep $$cmd{delay}s\n";
     sleep $$cmd{delay};
   }else{
     die "ERROR: unknown cmd\n";
