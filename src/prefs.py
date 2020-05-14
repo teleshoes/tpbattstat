@@ -221,30 +221,23 @@ def getPrefsLongDescriptions():
       based on how many patterns there are.
     {the left-most pattern is always used at 0% and the right-most at 100%}
     e.g.: if there are four patterns: 0-24%, 25-49%, 50-74%, 75-100%
-  
-  led-batt accepts either a single keyword arg, or a list of commands.
-  available keywords:
-    green            orange       both
-    slowblink-green  blink-green  fastblink-green
-    slowblink-orange blink-orange fastblink-orange
-    slowblink-both   blink-both   fastblink-both
-    off
- 
-  available led commands:
-    G : turn green light on
-    g : turn green light off
-    O : turn orange light on
-    o : turn orange light off
-    # : pause for # seconds {e.g.: 0.1 or 60 or 1.2}
+
+  led-batt controls green/orange battery LEDs and the power LED
+    (and any named LED, see `led` command for usage)
+  led-batt a list of commands to run in a loop
+  some command-lists have synonyms below (see `led-batt --help` for usage)
+    fastblink-pgo fastblink-p fastblink-g fastblink-o fastblink-pg fastblink-po fastblink-gp
+        blink-pgo     blink-p     blink-g     blink-o     blink-pg     blink-po     blink-gp
+    slowblink-pgo slowblink-p slowblink-g slowblink-o slowblink-pg slowblink-po slowblink-gp
 
   examples:
-    1) [blink-orange, blink-both, blink-green]
+    1) [blink-o, blink-go, blink-g]
        0% -  33% : blink orange light
       34% -  66% : blink both lights
       67% - 100% : blink green light
-    2) [fastblink-orange, both, "o G 5 g O 5", green]
-       0% -  24% : blink orange light quickly
-      25% -  49% : show both lights steady
+    2) [fastblink-po, all, "o G 5 g O 5", green]
+       0% -  24% : blink power+orange LEds quickly
+      25% -  49% : show power, green, and orange lights steady
       50% -  74% : cycle between orange and green every 5 seconds
       75% - 100% : show green light steady
   """
