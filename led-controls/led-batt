@@ -16,17 +16,18 @@ my @synonymsArr = (
   'power'  => [qw(P o g 60)],
   'both'   => [qw(p G O 60)],
 
-  'slowblink-green' => [qw(o G 3 g 3)],
-  'blink-green' => [qw(o G 1 g 1)],
+  'slowblink-green' => [qw(o G 3   g 3)],
+  'blink-green'     => [qw(o G 1   g 1)],
   'fastblink-green' => [qw(o G 0.1 g 0.1)],
 
-  'slowblink-orange' => [qw(g O 3 o 3)],
-  'blink-orange' => [qw(g O 1 o 1)],
+  'slowblink-orange' => [qw(g O 3   o 3)],
+  'blink-orange'     => [qw(g O 1   o 1)],
   'fastblink-orange' => [qw(g O 0.1 o 0.1)],
+
   'fastblink-orange-and-power' => [qw(g O 0.1 o p 0.1 P)],
 
-  'slowblink-both' => [qw(G O 3 g o 3)],
-  'blink-both' => [qw(G O 1 g o 1)],
+  'slowblink-both' => [qw(G O 3   g o 3)],
+  'blink-both'     => [qw(G O 1   g o 1)],
   'fastblink-both' => [qw(G O 0.1 g o 0.1)],
 );
 
