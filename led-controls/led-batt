@@ -10,25 +10,36 @@ my $pidfile = "/tmp/led-batt-pid";
 my @initialLEDsOff = qw(green:batt orange:batt power);
 
 my @synonymsArr = (
-  'off'    => [qw(p o g 60)],
-  'green'  => [qw(p o G 60)],
-  'orange' => [qw(p O g 60)],
-  'power'  => [qw(P o g 60)],
-  'both'   => [qw(p G O 60)],
+  'off' => [qw(3600)],
 
-  'slowblink-green' => [qw(o G 3   g 3)],
-  'blink-green'     => [qw(o G 1   g 1)],
-  'fastblink-green' => [qw(o G 0.1 g 0.1)],
+  'all'    => [qw(P G O 60)],
+  'power'  => [qw(P     60)],
+  'green'  => [qw(  G   60)],
+  'orange' => [qw(    O 60)],
 
-  'slowblink-orange' => [qw(g O 3   o 3)],
-  'blink-orange'     => [qw(g O 1   o 1)],
-  'fastblink-orange' => [qw(g O 0.1 o 0.1)],
+  'slowblink-pgo' => [qw(P G O 3     p g o 3)],
+  'slowblink-p'   => [qw(P     3     p     3)],
+  'slowblink-g'   => [qw(  G   3       g   3)],
+  'slowblink-o'   => [qw(    O 3         o 3)],
+  'slowblink-pg'  => [qw(P G   3     p g   3)],
+  'slowblink-po'  => [qw(P   O 3     p   o 3)],
+  'slowblink-go'  => [qw(  G O 3       g o 3)],
 
-  'fastblink-orange-and-power' => [qw(g O 0.1 o p 0.1 P)],
+  'blink-pgo'     => [qw(P G O 1     p g o 1)],
+  'blink-p'       => [qw(P     1     p     1)],
+  'blink-g'       => [qw(  G   1       g   1)],
+  'blink-o'       => [qw(    O 1         o 1)],
+  'blink-pg'      => [qw(P G   1     p g   1)],
+  'blink-po'      => [qw(P   O 1     p   o 1)],
+  'blink-go'      => [qw(  G O 1       g o 1)],
 
-  'slowblink-both' => [qw(G O 3   g o 3)],
-  'blink-both'     => [qw(G O 1   g o 1)],
-  'fastblink-both' => [qw(G O 0.1 g o 0.1)],
+  'fastblink-pgo' => [qw(P G O 0.1   p g o 0.1)],
+  'fastblink-p'   => [qw(P     0.1   p     0.1)],
+  'fastblink-g'   => [qw(  G   0.1     g   0.1)],
+  'fastblink-o'   => [qw(    O 0.1       o 0.1)],
+  'fastblink-pg'  => [qw(P G   0.1   p g   0.1)],
+  'fastblink-po'  => [qw(P   O 0.1   p   o 0.1)],
+  'fastblink-go'  => [qw(  G O 0.1     g o 0.1)],
 );
 
 my %synonyms = @synonymsArr;
