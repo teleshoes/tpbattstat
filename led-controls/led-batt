@@ -86,11 +86,14 @@ my $usage = "Usage:
          run this sequence forever (default)
        -o | --once
          run this sequence once, and exit
+       --skip-off | --no-init
+         skip turning off LEDs at startup
 ";
 
 sub main(@){
   my $once = 0;
-  while(@_ > 0 and $_[0] =~ /^(-h|--help|--loop|-o|--once)$/){
+  my $skipInitOff = 0;
+  while(@_ > 0 and $_[0] =~ /^(-h|--help|--loop|-o|--once|--skip-off|--no-init)$/){
     my $opt = shift;
     if($opt =~ /^-h|--help$/){
       print $usage;
@@ -99,6 +102,8 @@ sub main(@){
       $once = 0;
     }elsif($opt =~ /^(-o|--once)$/){
       $once = 1;
+    }elsif($opt =~ /^(--skip-off|--no-init)$/){
+      $skipInitOff = 1;
     }else{
       die "$usage\nERROR: unknown option $opt\n";
     }
@@ -119,8 +124,10 @@ sub main(@){
   killPidfile();
   savePid();
 
-  for my $led(@initialLEDsOff){
-    performCmd {cmd=>"off", led=>$led};
+  if(not $skipInitOff){
+    for my $led(@initialLEDsOff){
+      performCmd {cmd=>"off", led=>$led};
+    }
   }
 
   print "\nstarting loop:\n";
