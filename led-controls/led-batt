@@ -7,6 +7,8 @@ use List::Util qw(max);
 
 my $pidfile = "/tmp/led-batt-pid";
 
+my @initialLEDsOff = qw(green:batt orange:batt power);
+
 my @synonymsArr = (
   'off'    => [qw(p o g 60)],
   'green'  => [qw(p o G 60)],
@@ -49,9 +51,9 @@ my $usage = "Usage:
      kills the process in pidfile $pidfile
 
    $EXEC [OPTS] CMD CMD CMD ....
-     CMDs get performed forever in a loop (or once with --once)
-     kills the process in pidfile $pidfile and writes pid to pidfile,
-       before running commands
+     -Kill the process in pidfile $pidfile and writes pid to pidfile
+     -Turn off all these LEDs: @initialLEDsOff
+     -Run run all the indicated CMDs, in a loop forever (or once with --once)
 
      CMD:
        <LED_NAME>-on    turn ON led named LED_NAME
@@ -104,6 +106,11 @@ sub main(@){
 
   killPidfile();
   savePid();
+
+  for my $led(@initialLEDsOff){
+    performCmd {cmd=>"off", led=>$led};
+  }
+
   while(1){
     performCmd $_ foreach @cmds;
     exit 0 if $once;
