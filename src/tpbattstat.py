@@ -21,12 +21,11 @@
 
 from prefs import Prefs
 from gui import Gui
+from gtkmod import GTK_MOD
 from battstatus import BattStatus
 from guimarkup import GuiMarkupPrinter
 from actions import Actions
 import sys
-import gtk
-import gobject
 
 class TPBattStat():
   def __init__(self, mode, forceDelay=None, forceIconSize=None):
@@ -79,15 +78,15 @@ class TPBattStat():
       self.curDelay = self.prefs['delay']
       if self.curDelay <= 0:
         self.curDelay = 1000
-      gobject.timeout_add(self.curDelay, self.update)
+      GTK_MOD.TIMEOUT_ADD_FCT(self.curDelay, self.update)
       return False
     else:
       return True
 
 def showAndExit(gtkElem):
-  gtkElem.connect("destroy", gtk.main_quit)
+  gtkElem.connect("destroy", GTK_MOD.GTK.main_quit)
   gtkElem.show_all()
-  gtk.main()
+  GTK_MOD.GTK.main()
   sys.exit()
 
 def formatCmd(cmdArr):
@@ -125,12 +124,12 @@ def main():
     print(usage(sys.argv[0], commands))
 
   if cmd == 'window' and len(args) == 0:
-    window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+    window = GTK_MOD.GTK.Window(GTK_MOD.WINDOW_TOPLEVEL)
     window.set_title("TPBattStat")
     tpbattstat = TPBattStat("gtk")
     tpbattstat.startUpdate()
     window.add(tpbattstat.gui.getGtkWidget())
-    window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+    window.add_events(GTK_MOD.BUTTON_PRESS_MASK)
     window.connect("button_press_event", tpbattstat.onClickEvent)
     showAndExit(window)
   elif cmd == 'prefs' and len(args) == 0:
@@ -147,7 +146,7 @@ def main():
 
     tpbattstat = TPBattStat(cmd, forceDelay=delay, forceIconSize=iconSize)
     tpbattstat.startUpdate()
-    gtk.main()
+    GTK_MOD.GTK.main()
     sys.exit()
   else:
     print(usage(sys.argv[0], commands))

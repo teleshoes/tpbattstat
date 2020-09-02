@@ -21,8 +21,7 @@
 
 from battstatus import State
 from guiprefs import GuiPrefs
-import gtk
-import gtk.gdk
+from gtkmod import GTK_MOD
 import re
 
 IMAGE_DIR = '/usr/share/pixmaps/tpbattstat-applet/svg'
@@ -31,14 +30,14 @@ class Gui():
   def __init__(self, prefs, battStatus, orientation='horizontal'):
     self.prefs = prefs
     self.battStatus = battStatus
-    self.label = gtk.Label("<?>")
-    self.batt0img = gtk.Image()
-    self.batt1img = gtk.Image()
+    self.label = GTK_MOD.GTK.Label("<?>")
+    self.batt0img = GTK_MOD.GTK.Image()
+    self.batt1img = GTK_MOD.GTK.Image()
     self.counter = 0
     self.orientation = orientation
     self.pixbufSize = None
 
-    self.container = gtk.HBox()
+    self.container = GTK_MOD.GTK.HBox()
     self.box = None
     self.resetLayout()
 
@@ -50,9 +49,9 @@ class Gui():
       self.container.remove(self.box)
 
     if self.isVertical():
-      self.box = gtk.VBox()
+      self.box = GTK_MOD.GTK.VBox()
     else:
-      self.box = gtk.HBox()
+      self.box = GTK_MOD.GTK.HBox()
 
     self.box.add(self.batt0img)
     self.box.add(self.label)
@@ -80,7 +79,7 @@ class Gui():
       self.discharging.append(self.newPixbuf(w, h, 'discharging/' + img))
 
   def newPixbuf(self, w, h, filename):
-    return gtk.gdk.pixbuf_new_from_file_at_size(
+    return GTK_MOD.PIXBUF_MOD_NEW_FCT(
       IMAGE_DIR + '/' + filename, w, h)
   def selectPixbufByBattId(self, batt_id):
     battInfo = self.battStatus.getBattInfo(batt_id)
@@ -183,7 +182,7 @@ class Gui():
   def ensurePreferencesDialog(self):
     if self.guiPrefs == None or self.guiPrefs.get_window() == None:
       self.guiPrefs = GuiPrefs(self.prefs)
-      self.prefsDialog = gtk.Window(gtk.WINDOW_TOPLEVEL)
+      self.prefsDialog = GTK_MOD.GTK.Window(GTK_MOD.WINDOW_TOPLEVEL)
       self.prefsDialog.set_title('TPBattStat Preferences')
       self.prefsDialog.add(self.guiPrefs)
     self.guiPrefs.update()

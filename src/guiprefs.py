@@ -19,27 +19,27 @@
 # along with TPBattStatApplet. If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+from gtkmod import GTK_MOD
 import sys
 import re
 from subprocess import Popen, PIPE
-import gtk
 
-class GuiPrefs(gtk.VBox):
+class GuiPrefs(GTK_MOD.GTK.VBox):
   def __init__(self, prefs):
     super(GuiPrefs, self).__init__()
     self.prefs = prefs
 
-    align = gtk.Alignment(xalign=0, yalign=0.5, xscale=0, yscale=0)
-    self.table = gtk.Table(rows=len(self.prefs.prefsArr), columns=2)
+    align = GTK_MOD.GTK.Alignment(xalign=0, yalign=0.5, xscale=0, yscale=0)
+    self.table = GTK_MOD.GTK.Table(rows=len(self.prefs.prefsArr), columns=2)
     self.add(self.table)
     self.curRow = -1
     self.curCol = -1
     self.colors = {
-      'lightgrey': gtk.gdk.Color(10000, 10000, 10000),
-      'darkgrey': gtk.gdk.Color(50000, 50000, 50000)
+      'lightgrey': GTK_MOD.GDK.Color(10000, 10000, 10000),
+      'darkgrey': GTK_MOD.GDK.Color(50000, 50000, 50000)
     }
 
-    self.messageLabel = gtk.Label()
+    self.messageLabel = GTK_MOD.GTK.Label()
     self.nextRow()
     self.addCell(self.messageLabel, 2)
     self.prefRows = []
@@ -55,7 +55,7 @@ class GuiPrefs(gtk.VBox):
     msg = '{you can also edit the conf file at: ' + self.prefs.prefsFile + '}'
     if msg != '':
       self.nextRow()
-      self.addCell(gtk.Label(msg), 2)
+      self.addCell(GTK_MOD.GTK.Label(msg), 2)
   def nextRow(self):
     self.curCol = -1
     self.curRow += 1
@@ -68,13 +68,13 @@ class GuiPrefs(gtk.VBox):
     self.table.attach(w, 0, 2, self.curRow, self.curRow+1)
   def addCell(self, w, colWidth):
     self.curCol += 1
-    eb = gtk.EventBox()
+    eb = GTK_MOD.GTK.EventBox()
     (bgColor, fgColor) = self.rowColor()
     if bgColor != None:
-      eb.modify_bg(gtk.STATE_NORMAL, bgColor)
+      eb.modify_bg(GTK_MOD.STATE_NORMAL, bgColor)
     if fgColor != None:
-      eb.modify_fg(gtk.STATE_NORMAL, fgColor)
-    w.modify_fg(gtk.STATE_NORMAL, fgColor)
+      eb.modify_fg(GTK_MOD.STATE_NORMAL, fgColor)
+    w.modify_fg(GTK_MOD.STATE_NORMAL, fgColor)
     eb.add(w)
     (col, row) = (self.curCol, self.curRow)
     self.table.attach(eb, col, col+colWidth, row, row+1)
@@ -90,7 +90,7 @@ class PrefRow():
     self.prefs = prefs
     self.messageLabel = messageLabel
 
-    self.label = gtk.Label()
+    self.label = GTK_MOD.GTK.Label()
     self.label.set_markup(self.getLabelMarkup())
     self.label.set_tooltip_markup(self.getTooltipMarkup())
     self.prefWidget = self.buildWidget()
@@ -141,7 +141,7 @@ class PrefRow():
     self.prefWidget.setValueFct(self.prefs[self.pref.name])
     self.ignoreChanges = False
 
-class GconfRadioButton(gtk.RadioButton):
+class GconfRadioButton(GTK_MOD.GTK.RadioButton):
   def __init__(self, value, group=None, label=None, use_underline=True):
     super(GconfRadioButton, self).__init__(group, label, use_underline)
     self.value = value
@@ -155,34 +155,34 @@ class PrefWidget():
     (minval, maxval, step, page) = (None, None, 5, 20)
     spinAdj = self.intAdj(minval, maxval, step, page)
     if valType == 'int':
-      self.widget = gtk.SpinButton(adjustment=spinAdj, climb_rate=float(step), digits=0)
+      self.widget = GTK_MOD.GTK.SpinButton(adjustment=spinAdj, climb_rate=float(step), digits=0)
       self.getValueFct = self.widget.get_value_as_int
       self.setValueFct = self.setSpinButtonValue
       self.changeSignal = 'value-changed'
     elif valType == 'float':
-      self.widget = gtk.SpinButton(adjustment=spinAdj, climb_rate=step, digits=3)
+      self.widget = GTK_MOD.GTK.SpinButton(adjustment=spinAdj, climb_rate=step, digits=3)
       self.getValueFct = self.widget.get_value
       self.setValueFct = self.setSpinButtonValue
       self.changeSignal = 'value-changed'
     elif valType == 'bool':
-      self.widget = gtk.CheckButton()
+      self.widget = GTK_MOD.GTK.CheckButton()
       self.getValueFct = self.widget.get_active
       self.setValueFct = self.widget.set_active
       self.changeSignal = 'toggled'
     elif valType == 'enum':
-      self.widget = gtk.combo_box_new_text()
+      self.widget = GTK_MOD.NEW_COMBO_BOX_FCT()
       self.getValueFct = self.widget.get_active_text
       self.setValueFct = self.setComboBoxValue
       self.changeSignal = 'changed'
       for name in enum.names:
         self.widget.append_text(name)
     elif valType == 'string':
-      self.widget = gtk.Entry()
+      self.widget = GTK_MOD.GTK.Entry()
       self.getValueFct = self.widget.get_text
       self.setValueFct = self.widget.set_text
       self.changeSignal = 'changed'
     elif valType[:5] == 'list-':
-      self.widget = gtk.Entry()
+      self.widget = GTK_MOD.GTK.Entry()
       self.getValueFct = self.widget.get_text
       self.setValueFct = self.setListValue
       self.changeSignal = 'changed'
@@ -219,7 +219,7 @@ class PrefWidget():
       page = 10
     initial = 0
     pagesize = 10
-    return gtk.Adjustment(float(initial), float(minval), float(maxval),
+    return GTK_MOD.GTK.Adjustment(float(initial), float(minval), float(maxval),
       float(step), float(page), 0.0)
   def floatAdj(self, minval, maxval, step, page):
     if minval == None:
@@ -231,4 +231,4 @@ class PrefWidget():
     if page == None:
       page = 1.0
     initial = 0.0
-    return gtk.Adjustment(initial, minval, maxval, step, page, 0.0)
+    return GTK_MOD.GTK.Adjustment(initial, minval, maxval, step, page, 0.0)
