@@ -233,7 +233,7 @@ class BattInfoAcpi(BattInfoBase):
     if self.installed != '1':
       return
 
-    status = self.readStr('status')
+    status = self.readStr('status').decode('utf-8')
 
     if status == 'Charging':
       self.state = State.CHARGING
