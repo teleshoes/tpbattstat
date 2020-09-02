@@ -117,7 +117,7 @@ class PrefRow():
       self.messageLabel.set_markup('saved ' + self.pref.name)
       print('saved!')
     except Exception as e:
-      self.messageLabel.set_text('ERROR: ' + e.message)
+      self.messageLabel.set_text('ERROR: ' + str(e))
       print('prefs not saved: ' + str(e))
 
   def smallText(self, msg):

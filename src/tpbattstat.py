@@ -55,7 +55,7 @@ class TPBattStat():
       self.prefs.update()
     except Exception as e:
       print('ignoring prefs')
-      print(e.message)
+      print(str(e))
     if self.forceDelay != None:
       self.prefs['delay'] = self.forceDelay
     self.battStatus.update(self.prefs)
@@ -71,7 +71,7 @@ class TPBattStat():
           markup = self.guiMarkupPrinter.getMarkupDzen()
         print(markup)
         sys.stdout.flush()
-      except IOError, e:
+      except IOError:
         sys.stderr.write("STDOUT is broken, assuming external gui is dead" + "\n")
         sys.exit(1)
 
