@@ -17,6 +17,14 @@ my @synonymsArr = (
   'green'  => [qw(  G   60)],
   'orange' => [qw(    O 60)],
 
+  'on-pgo' => [qw(P G O 60)],
+  'on-p'   => [qw(P     60)],
+  'on-g'   => [qw(  G   60)],
+  'on-o'   => [qw(  G O 60)],
+  'on-pg'  => [qw(P G   60)],
+  'on-po'  => [qw(P   O 60)],
+  'on-go'  => [qw(  G O 60)],
+
   'slowblink-pgo' => [qw(P G O 3     p g o 3)],
   'slowblink-p'   => [qw(P     3     p     3)],
   'slowblink-g'   => [qw(  G   3       g   3)],
