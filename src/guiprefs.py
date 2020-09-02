@@ -210,9 +210,9 @@ class PrefWidget():
     self.widget.set_active(index)
   def intAdj(self, minval, maxval, step, page):
     if minval == None:
-      minval = 0-sys.maxint
+      minval = 0-sys.maxsize
     if maxval == None:
-      maxval = sys.maxint
+      maxval = sys.maxsize
     if step == None:
       step = 1
     if page == None:
@@ -223,9 +223,9 @@ class PrefWidget():
       float(step), float(page), 0.0)
   def floatAdj(self, minval, maxval, step, page):
     if minval == None:
-      minval = float(0-sys.maxint)
+      minval = float(0-sys.maxsize)
     if maxval == None:
-      maxval = float(sys.maxint)
+      maxval = float(sys.maxsize)
     if step == None:
       step = 0.1
     if page == None:
