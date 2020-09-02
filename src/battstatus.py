@@ -153,7 +153,7 @@ class ACInfoSmapi(ACInfoBase, SmapiReader):
   def update(self, prefs):
     self.clear()
     self.ac_connected = self.smapi_get(-1, 'ac_connected')
-    
+
 class BattInfoSmapi(BattInfoBase, SmapiReader):
   def update(self, prefs):
     self.clear()

@@ -57,7 +57,7 @@ class Gui():
     self.box.add(self.batt0img)
     self.box.add(self.label)
     self.box.add(self.batt1img)
-    
+
     self.container.add(self.box)
     self.container.show_all()
 

@@ -44,7 +44,7 @@ class TPBattStat():
     elif self.mode == "json" or self.mode == "dzen":
       self.guiMarkupPrinter = GuiMarkupPrinter(
         self.prefs, self.battStatus, forceIconSize)
-      
+
   def getGui(self):
     return self.gui
   def startUpdate(self):
@@ -85,7 +85,7 @@ class TPBattStat():
       return True
 
 def showAndExit(gtkElem):
-  gtkElem.connect("destroy", gtk.main_quit) 
+  gtkElem.connect("destroy", gtk.main_quit)
   gtkElem.show_all()
   gtk.main()
   sys.exit()
