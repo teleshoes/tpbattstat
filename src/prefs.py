@@ -105,7 +105,7 @@ class Prefs():
     self.defaultPrefs = dict(zip(self.prefNames, defVals))
 
     longDescs = getPrefsLongDescriptions()
-    for (k, v) in longDescs.iteritems():
+    for (k, v) in iter(longDescs.items()):
       self.prefsByName[k].longDesc = v
 
     self.curPrefs = dict(self.defaultPrefs)
