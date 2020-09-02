@@ -29,7 +29,7 @@ class GuiPrefs(gtk.VBox):
     super(GuiPrefs, self).__init__()
     self.prefs = prefs
 
-    align = gtk.Alignment(0, 0.5, 0, 0)
+    align = gtk.Alignment(xalign=0, yalign=0.5, xscale=0, yscale=0)
     self.table = gtk.Table(rows=len(self.prefs.prefsArr), columns=2)
     self.add(self.table)
     self.curRow = -1
