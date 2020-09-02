@@ -74,4 +74,4 @@ class Actions():
       pattern = patterns[index]
     return self.parsePattern(pattern)
   def parsePattern(self, pattern):
-    return filter(None, re.split(' +', pattern))
+    return list(filter(None, re.split(' +', pattern)))

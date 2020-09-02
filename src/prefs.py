@@ -99,9 +99,9 @@ class Prefs():
     self.prefsFile = self.prefsDir + '/' + 'tpbattstat.conf'
 
     self.prefsArr = getPrefs()
-    self.prefNames = map(lambda p: p.name, self.prefsArr)
+    self.prefNames = list(map(lambda p: p.name, self.prefsArr))
     self.prefsByName = dict(zip(self.prefNames, self.prefsArr))
-    defVals = map(lambda p: p.default, self.prefsArr)
+    defVals = list(map(lambda p: p.default, self.prefsArr))
     self.defaultPrefs = dict(zip(self.prefNames, defVals))
 
     longDescs = getPrefsLongDescriptions()
