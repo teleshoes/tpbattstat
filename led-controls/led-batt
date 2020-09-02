@@ -17,6 +17,10 @@ my @synonymsArr = (
   'green'  => [qw(  G   60)],
   'orange' => [qw(    O 60)],
 
+  'power-green'  => [qw(P G   60)],
+  'power-orange' => [qw(P   O 60)],
+  'green-orange' => [qw(  G O 60)],
+
   'on-pgo' => [qw(P G O 60)],
   'on-p'   => [qw(P     60)],
   'on-g'   => [qw(  G   60)],
