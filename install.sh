@@ -11,7 +11,7 @@ if [ ! -e "icons/png" ]; then
 fi
 
 cd src
-echo copying $NAME.py to $LIB_INSTALL_DIR
+echo copying $NAME sources to $LIB_INSTALL_DIR
 echo
 sudo mkdir -p $LIB_INSTALL_DIR
 sudo cp *.py $LIB_INSTALL_DIR
