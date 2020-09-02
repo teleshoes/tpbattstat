@@ -155,12 +155,12 @@ class PrefWidget():
     (minval, maxval, step, page) = (None, None, 5, 20)
     spinAdj = self.intAdj(minval, maxval, step, page)
     if valType == 'int':
-      self.widget = gtk.SpinButton(spinAdj, float(step), 0)
+      self.widget = gtk.SpinButton(adjustment=spinAdj, climb_rate=float(step), digits=0)
       self.getValueFct = self.widget.get_value_as_int
       self.setValueFct = self.setSpinButtonValue
       self.changeSignal = 'value-changed'
     elif valType == 'float':
-      self.widget = gtk.SpinButton(spinAdj, step, 3)
+      self.widget = gtk.SpinButton(adjustment=spinAdj, climb_rate=step, digits=3)
       self.getValueFct = self.widget.get_value
       self.setValueFct = self.setSpinButtonValue
       self.changeSignal = 'value-changed'
