@@ -47,6 +47,9 @@ class TPBattStat():
   def startUpdate(self):
     self.curDelay = -1
     self.update()
+  def onClickEvent(self, widget, event):
+    if event.button == 1:
+      self.getGui().showPreferencesDialog()
   def update(self):
     try:
       self.prefs.update()
@@ -86,10 +89,6 @@ def showAndExit(gtkElem):
   gtkElem.show_all()
   gtk.main()
   sys.exit()
-
-def prefsClickHandler(widget, event):
-  if event.button == 1:
-    prefsDialog = TPBattStat("prefs").getGui().showPreferencesDialog()
 
 def formatCmd(cmdArr):
   return "|".join(cmdArr)
@@ -132,7 +131,7 @@ def main():
     tpbattstat.startUpdate()
     window.add(tpbattstat.gui.getGtkWidget())
     window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-    window.connect("button_press_event", prefsClickHandler)
+    window.connect("button_press_event", tpbattstat.onClickEvent)
     showAndExit(window)
   elif cmd == 'prefs' and len(args) == 0:
     prefsDialog = TPBattStat("prefs").getGui().getPreferencesDialog()
