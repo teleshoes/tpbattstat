@@ -190,7 +190,9 @@ class ACInfoAcpi(ACInfoBase):
     return '/sys/class/power_supply/AC/online'
   def update(self, prefs):
     if os.path.isfile(self.acpiAcPath()):
-      s = file(self.acpiAcPath()).read()
+      f = open(self.acpiAcPath(), 'r')
+      s = f.read()
+      f.close()
     else:
       s = "unknown"
     if s == "1\n":
@@ -202,9 +204,12 @@ class BattInfoAcpi(BattInfoBase):
   def acpiDir(self):
     return "/sys/class/power_supply/BAT" + str(self.batt_id)
   def readStr(self, field):
-    f = self.acpiDir() + "/" + field
-    if os.path.isfile(f):
-      return file(f).read().strip()
+    filename = self.acpiDir() + "/" + field
+    if os.path.isfile(filename):
+      f = open(filename, 'rb')
+      s = f.read()
+      f.close()
+      return s.strip()
     else:
       return ""
   def readInt(self, field):

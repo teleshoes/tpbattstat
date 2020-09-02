@@ -129,7 +129,9 @@ class Prefs():
     if not os.path.isdir(self.prefsDir):
       os.makedirs(self.prefsDir, 0755)
     if not os.path.isfile(self.prefsFile):
-      file(self.prefsFile, 'w').write(self.getDefaultPrefsFile())
+      f = open(self.prefsFile, 'w')
+      f.write(self.getDefaultPrefsFile())
+      f.close()
   def checkPrefsFileChanged(self):
     if not os.path.isfile(self.prefsFile):
       return True
@@ -141,7 +143,10 @@ class Prefs():
   def readPrefsFile(self):
     self.ensurePrefsFile()
     d = dict(self.defaultPrefs)
-    for line in file(self.prefsFile).readlines():
+    f = open(self.prefsFile, 'r')
+    lines = f.readlines()
+    f.close()
+    for line in lines:
       line = line.partition('#')[0]
       line = line.strip()
       if len(line) > 0:
@@ -165,7 +170,9 @@ class Prefs():
         else:
           val = str(val)
         s += name + " = " + val + "\n"
-    file(self.prefsFile, 'w').write(s)
+    f = open(self.prefsFile, 'w')
+    f.write(s)
+    f.close()
   def listToString(self, xs):
     return '[' + ','.join(map(str, xs)) + ']'
   def readVal(self, prefName, valType, valStr, enumVals):
