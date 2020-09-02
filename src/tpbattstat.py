@@ -19,9 +19,6 @@
 # along with TPBattStatApplet. If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-import pygtk
-pygtk.require('2.0')
-
 from prefs import Prefs
 from gui import Gui
 from battstatus import BattStatus
