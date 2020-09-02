@@ -50,7 +50,7 @@ class Actions():
       newLed = self.calculateLedPattern()
       if self.ledPattern != newLed:
         self.ledPattern = newLed
-        print >> sys.stderr, "using led pattern: " + str(self.ledPattern)
+        sys.stderr.write("using led pattern: " + str(self.ledPattern) + "\n")
         nullFile = open('/dev/null', 'w')
         if self.ledPattern != []:
           Popen([LED_BATT_EXEC] + self.ledPattern, stdout=nullFile)

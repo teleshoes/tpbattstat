@@ -28,21 +28,21 @@ SMAPI_BATTACCESS = '/usr/bin/smapi-battaccess'
 
 def smapi_set(batt_id, prop, val):
   try:
-    print >> sys.stderr, "setting BAT" + str(batt_id) + "/" + prop + " => " + val
+    sys.stderr.write("setting BAT" + str(batt_id) + "/" + prop + " => " + val + "\n")
     p = Popen([SMAPI_BATTACCESS, '-s', str(batt_id), prop, val])
     p.wait()
   except:
     msg = 'Could not set ' + prop + '=' + val + ' on bat ' + str(batt_id)
-    print >> sys.stderr, msg
+    sys.stderr.write(msg + "\n")
 
 def tpacpi_set(batt_id, method, val=None):
   try:
-    print >> sys.stderr, "setting BAT" + str(batt_id) + "/" + method + " => " + val
+    sys.stderr.write("setting BAT" + str(batt_id) + "/" + method + " => " + val + "\n")
     p = Popen([TPACPI_BAT, '-s', method, str(batt_id), val])
     p.wait()
   except:
     msg = 'Could not set ' + method + '=' + val + ' on bat ' + str(batt_id)
-    print >> sys.stderr, msg
+    sys.stderr.write(msg + "\n")
 
 class BattBalance():
   def __init__(self, prefs, battStatus):

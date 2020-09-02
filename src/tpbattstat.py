@@ -54,8 +54,8 @@ class TPBattStat():
     try:
       self.prefs.update()
     except Exception as e:
-      print 'ignoring prefs'
-      print e.message
+      print('ignoring prefs')
+      print(e.message)
     if self.forceDelay != None:
       self.prefs['delay'] = self.forceDelay
     self.battStatus.update(self.prefs)
@@ -69,10 +69,10 @@ class TPBattStat():
           markup = self.guiMarkupPrinter.getMarkupJson()
         elif self.mode == "dzen":
           markup = self.guiMarkupPrinter.getMarkupDzen()
-        print markup
+        print(markup)
         sys.stdout.flush()
       except IOError, e:
-        print >> sys.stderr, "STDOUT is broken, assuming external gui is dead"
+        sys.stderr.write("STDOUT is broken, assuming external gui is dead" + "\n")
         sys.exit(1)
 
     if self.prefs['delay'] != self.curDelay:
@@ -122,7 +122,7 @@ def main():
     cmd = getCommand(sys.argv[1], commands)
     args = sys.argv[2:]
   else:
-    print usage(sys.argv[0], commands)
+    print(usage(sys.argv[0], commands))
 
   if cmd == 'window' and len(args) == 0:
     window = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -150,7 +150,7 @@ def main():
     gtk.main()
     sys.exit()
   else:
-    print usage(sys.argv[0], commands)
+    print(usage(sys.argv[0], commands))
 
 if __name__ == "__main__":
   sys.exit(main())

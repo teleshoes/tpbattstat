@@ -104,7 +104,7 @@ class PrefRow():
   def savePref(self, w):
     if self.ignoreChanges:
       return
-    print '..saving prefs'
+    print('..saving prefs')
 
     try:
       self.prefs.readPrefsFile()
@@ -115,10 +115,10 @@ class PrefRow():
       self.prefs.writePrefsFile()
       self.prefs.readPrefsFile()
       self.messageLabel.set_markup('saved ' + self.pref.name)
-      print 'saved!'
+      print('saved!')
     except Exception as e:
       self.messageLabel.set_text('ERROR: ' + e.message)
-      print 'prefs not saved: ' + e.message
+      print('prefs not saved: ' + str(e))
 
   def smallText(self, msg):
     return '<span size="small">' + msg + '</span>'

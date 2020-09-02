@@ -146,7 +146,7 @@ class SmapiReader():
       return stdout
     except:
       msg = 'Could not get ' + prop + ' on bat ' + str(batt_id)
-      print >> sys.stderr, msg
+      sys.stderr.write(msg + "\n")
       return -1
 
 class ACInfoSmapi(ACInfoBase, SmapiReader):
