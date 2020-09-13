@@ -69,7 +69,7 @@ def getPrefs():
   Pref("displayColoredText", "bool", True,
     "Green/red for charging/discharging"),
   Pref("iconSize", "string", "36x36",
-    "Icon WxH in px; only 24x24 and 36x36 work in markup printing"),
+    "Icon WxH in px; (scales in GTK gui, but only exact sizes work in markup printing)"),
   Pref("displayIcons", "bool", True,
     "Show battery icon(s)"),
   Pref("displayOnlyOneIcon", "bool", True,
