@@ -149,7 +149,7 @@ class GuiMarkupPrinter():
     else:
       img = img + "/idle"
 
-    img = img + "/" + str(percent / 10 * 10) + "." + ext
+    img = img + "/" + str(int(percent / 10) * 10) + "." + ext
     return img
   def getJointImage(self):
     if self.prefs['displayIcons'] and self.prefs['displayOnlyOneIcon']:
