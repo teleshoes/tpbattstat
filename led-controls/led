@@ -46,8 +46,9 @@ my $usage = "Usage:
      same as `$EXEC LED_NAME toggle`
 
   LED_NAME
-    -must be [a-zA-Z0-9:_\\-]+
-      {only letters, numbers, colons, underscores or hyphens}
+    -must be [a-zA-Z0-9_][a-zA-Z0-9:_\\-]*
+      -can contain only letters, numbers, colons, underscores or hyphens
+      -first character must be letter, number or underscore
     -the first LED device that matches below is used:
        $LED_DIR/<led-name>/brightness
        $LED_DIR/tpacpi:<led-name>/brightness
@@ -93,7 +94,7 @@ sub main(@){
       $brightness = $1;
     }elsif($arg =~ /^(toggle)$/){
       $cmd = $CMD_TOGGLE;
-    }elsif($arg =~ /^([a-zA-Z0-9:_\\-]+)$/){
+    }elsif($arg =~ /^([a-zA-Z0-9_][a-zA-Z0-9:_\\-]*)$/){
       die "ERROR: duplicate LED_NAME $arg + $ledName\n" if defined $ledName;
       $ledName = $1;
     }else{
