@@ -11,6 +11,7 @@ sub getDeviceByLEDName($);
 sub getLEDNames();
 sub readDev($);
 sub writeDev($$);
+sub bashComplete($$);
 
 my %synonyms = (
   mic      => [qw(micmute mute_mic)],
@@ -53,6 +54,11 @@ my $usage = "Usage:
   $EXEC LED_NAME --off|off
     same as: $EXEC LED_NAME --set 0
 
+  $EXEC --bash-complete COMP_LINE COMP_POINT
+     print a list of words for bash completion, one per line
+     COMP_LINE  - the full cmdline as a string
+     COMP_POINT - the cursor position in the cmdline
+
   BRIGHTNESS
     any non-negative integer
     0 usually means off
@@ -79,6 +85,7 @@ my $CMD_LIST_LEDS = "list-leds";
 my $CMD_DEV_PATH = "dev-path";
 my $CMD_GET = "get";
 my $CMD_SET = "set";
+my $CMD_BASH_COMPLETE = "bash-complete";
 
 sub main(@){
   my $cmd = $CMD_SET;
@@ -88,6 +95,11 @@ sub main(@){
     my $arg = shift @_;
     if($arg =~ /^(--help|-h|help)$/){
       print $usage;
+      exit 0;
+    }elsif($arg =~ /^(--bash-complete)$/){
+      die "ERROR: missing bash complete line/point\n" if @_ != 2;
+      my ($cmdLine, $pos) = @_;
+      print map {"$_\n"} bashComplete($cmdLine, $pos);
       exit 0;
     }elsif($arg =~ /^(--list|-l|list)$/){
       $cmd = $CMD_LIST_LEDS;
@@ -214,6 +226,33 @@ sub writeDev($$){
   open FH, "> $dev" or die "ERROR: could not write $dev\n$!\n";
   print FH "$val\n";
   close FH;
+}
+
+sub bashComplete($$){
+  my ($cmdLine, $pos) = @_;
+  my $cmd = substr $cmdLine, 0, $pos;
+  my $isNewWord = $cmd =~ /\s$/;
+  $cmd =~ s/^\s+//;
+  $cmd =~ s/\s+$//;
+
+  my @words = split /\s+/, $cmd;
+  shift @words;
+  pop @words if not $isNewWord;
+
+  my @cmds = qw(--get|--set|--toggle|--dev|--list|--on|--off);
+  my @ledNames = getLEDNames();
+
+  my @complete;
+
+  if(@words == 0){
+    @complete = (@cmds, @ledNames);
+  }elsif(@words == 1 and $words[0] =~ /^-/){
+    @complete = (@ledNames);
+  }elsif(@words == 1 and $words[0] !~ /^-/){
+    @complete = (@cmds);
+  }
+
+  return @complete;
 }
 
 &main(@ARGV);
