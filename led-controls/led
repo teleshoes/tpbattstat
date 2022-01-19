@@ -34,7 +34,12 @@ my $usage = "Usage:
      print the full path to the LED brightness device
 
   $EXEC LED_NAME --get|-g|get
-    read current value of the LED brightness device
+    read current value of the LED brightness device and print:
+      LED <LED_NAME>: <BRIGHTNESS>
+
+  $EXEC LED_NAME --read|-r|read
+    read current value of the LED brightness device and print:
+      <BRIGHTNESS>
 
   $EXEC LED_NAME --set|-s|set BRIGHTNESS
   $EXEC LED_NAME BRIGHTNESS
@@ -45,7 +50,7 @@ my $usage = "Usage:
   $EXEC LED_NAME --set|-s|set
     (this is the default command)
     similar to:
-      [[ `$EXEC LED_NAME --get` =~ '0' ]] && val=1 || val=0
+      [[ `$EXEC LED_NAME --read` -eq '0' ]] && val=1 || val=0
       $EXEC LED_NAME --set \$val
 
   $EXEC LED_NAME --on|on
@@ -84,6 +89,7 @@ my $usage = "Usage:
 my $CMD_LIST_LEDS = "list-leds";
 my $CMD_DEV_PATH = "dev-path";
 my $CMD_GET = "get";
+my $CMD_READ = "read";
 my $CMD_SET = "set";
 my $CMD_BASH_COMPLETE = "bash-complete";
 
@@ -107,6 +113,8 @@ sub main(@){
       $cmd = $CMD_DEV_PATH;
     }elsif($arg =~ /^(--get|-g|get)$/){
       $cmd = $CMD_GET;
+    }elsif($arg =~ /^(--read|-r|read)$/){
+      $cmd = $CMD_READ;
     }elsif($arg =~ /^(--set|-s|set)$/){
       $cmd = $CMD_SET;
     }elsif($arg =~ /^(--toggle|-t|toggle)$/){
@@ -131,7 +139,7 @@ sub main(@){
     }
   }
 
-  if($cmd =~ /^($CMD_DEV_PATH|$CMD_GET|$CMD_SET)$/){
+  if($cmd =~ /^($CMD_DEV_PATH|$CMD_GET|$CMD_READ|$CMD_SET)$/){
     die "ERROR: must set LED_NAME for $cmd\n" if not defined $ledName;
   }else{
     die "ERROR: cannot set LED_NAME for $cmd\n" if defined $ledName;
@@ -154,6 +162,12 @@ sub main(@){
     my $value = readDev $dev;
 
     print "LED $ledName: $value\n";
+  }elsif($cmd eq $CMD_READ){
+    my $dev = getDeviceByLEDName $ledName;
+    die "ERROR: could not find $ledName in $LED_DIR\n" if not defined $dev;
+    my $value = readDev $dev;
+
+    print "$value\n";
   }elsif($cmd eq $CMD_SET){
     ensureRoot();
     my $dev = getDeviceByLEDName $ledName;
@@ -239,7 +253,7 @@ sub bashComplete($$){
   shift @words;
   pop @words if not $isNewWord;
 
-  my @cmds = qw(--get|--set|--toggle|--dev|--list|--on|--off);
+  my @cmds = qw(--get|--read|--set|--toggle|--dev|--list|--on|--off);
   my @ledNames = getLEDNames();
 
   my @complete;
