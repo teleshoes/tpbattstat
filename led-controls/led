@@ -35,15 +35,22 @@ my $usage = "Usage:
   $EXEC LED_NAME --get
     read current value of the LED brightness device
 
-  $EXEC LED_NAME [on|off|toggle|BRIGHTNESS_INTEGER]
-    write indicated value to the LED brightness device
-      on:         1
-      off:        0
-      toggle:     if `--get` returns 0, then 1, else 0
-      BRIGHTNESS: to this specified integer
+  $EXEC LED_NAME --set BRIGHTNESS
+  $EXEC LED_NAME BRIGHTNESS
+    write BRIGHTNESS integer to the LED brightness device
 
   $EXEC LED_NAME
-     same as `$EXEC LED_NAME toggle`
+  $EXEC LED_NAME toggle
+    (this is the default command)
+    similar to:
+      [[ `$EXEC LED_NAME --get` =~ '0' ]] && val=1 || val=0
+      $EXEC LED_NAME --set \$val
+
+  $EXEC LED_NAME on
+    same as: $EXEC LED_NAME --set 1
+
+  $EXEC LED_NAME off
+    same as: $EXEC LED_NAME --set 0
 
   LED_NAME
     -must be [a-zA-Z0-9_][a-zA-Z0-9:_\\-]*
@@ -83,6 +90,8 @@ sub main(@){
       $cmd = $CMD_DEV_PATH;
     }elsif($arg =~ /^(--get)$/){
       $cmd = $CMD_GET;
+    }elsif($arg =~ /^(--set)$/){
+      $cmd = $CMD_SET;
     }elsif($arg =~ /^(on)$/){
       $cmd = $CMD_SET;
       $brightness = 1;
@@ -90,8 +99,10 @@ sub main(@){
       $cmd = $CMD_SET;
       $brightness = 0;
     }elsif($arg =~ /^(\d+)$/){
+      my $val = $1;
+      die "ERROR: duplicate BRIGHTNESS $val + $brightness\n" if defined $brightness;
+      $brightness = $val;
       $cmd = $CMD_SET;
-      $brightness = $1;
     }elsif($arg =~ /^(toggle)$/){
       $cmd = $CMD_TOGGLE;
     }elsif($arg =~ /^([a-zA-Z0-9_][a-zA-Z0-9:_\\-]*)$/){
