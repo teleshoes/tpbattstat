@@ -22,34 +22,34 @@ my $synonymsFmt = join '', map {"\n      $_ => (@{$synonyms{$_}})"} sort keys %s
 my @validLeds = getLEDNames();
 
 my $usage = "Usage:
-  $EXEC -h|--help
+  $EXEC --help|-h|help
     show this message
 
-  $EXEC --list
+  $EXEC --list|-l|list
      print available LED names:
        @validLeds
 
-  $EXEC LED_NAME --dev|--device|-d
+  $EXEC LED_NAME --dev|--device|-d|dev
      print the full path to the LED brightness device
 
-  $EXEC LED_NAME --get
+  $EXEC LED_NAME --get|-g|get
     read current value of the LED brightness device
 
-  $EXEC LED_NAME --set BRIGHTNESS
+  $EXEC LED_NAME --set|-s|set BRIGHTNESS
   $EXEC LED_NAME BRIGHTNESS
     write BRIGHTNESS integer to the LED brightness device
 
   $EXEC LED_NAME
-  $EXEC LED_NAME toggle
+  $EXEC LED_NAME --toggle|-t|toggle
     (this is the default command)
     similar to:
       [[ `$EXEC LED_NAME --get` =~ '0' ]] && val=1 || val=0
       $EXEC LED_NAME --set \$val
 
-  $EXEC LED_NAME on
+  $EXEC LED_NAME --on|on
     same as: $EXEC LED_NAME --set 1
 
-  $EXEC LED_NAME off
+  $EXEC LED_NAME --off|off
     same as: $EXEC LED_NAME --set 0
 
   LED_NAME
@@ -81,21 +81,21 @@ sub main(@){
   my $brightness = undef;
   while(@_ > 0){
     my $arg = shift @_;
-    if($arg =~ /^(-h|--help)$/){
+    if($arg =~ /^(--help|-h|help)$/){
       print $usage;
       exit 0;
-    }elsif($arg =~ /^(--list)$/){
+    }elsif($arg =~ /^(--list|-l|list)$/){
       $cmd = $CMD_LIST_LEDS;
-    }elsif($arg =~ /^(--dev|--device|-d)$/){
+    }elsif($arg =~ /^(--dev|--device|-d|dev)$/){
       $cmd = $CMD_DEV_PATH;
-    }elsif($arg =~ /^(--get)$/){
+    }elsif($arg =~ /^(--get|-g|get)$/){
       $cmd = $CMD_GET;
-    }elsif($arg =~ /^(--set)$/){
+    }elsif($arg =~ /^(--set|-s|set)$/){
       $cmd = $CMD_SET;
-    }elsif($arg =~ /^(on)$/){
+    }elsif($arg =~ /^(--on|on)$/){
       $cmd = $CMD_SET;
       $brightness = 1;
-    }elsif($arg =~ /^(off)$/){
+    }elsif($arg =~ /^(--off|off)$/){
       $cmd = $CMD_SET;
       $brightness = 0;
     }elsif($arg =~ /^(\d+)$/){
@@ -103,7 +103,7 @@ sub main(@){
       die "ERROR: duplicate BRIGHTNESS $val + $brightness\n" if defined $brightness;
       $brightness = $val;
       $cmd = $CMD_SET;
-    }elsif($arg =~ /^(toggle)$/){
+    }elsif($arg =~ /^(--toggle|-t|toggle)$/){
       $cmd = $CMD_TOGGLE;
     }elsif($arg =~ /^([a-zA-Z0-9_][a-zA-Z0-9:_\\-]*)$/){
       die "ERROR: duplicate LED_NAME $arg + $ledName\n" if defined $ledName;
