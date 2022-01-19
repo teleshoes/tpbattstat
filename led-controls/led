@@ -139,8 +139,11 @@ sub main(@){
     }
   }
 
+  my $dev;
   if($cmd =~ /^($CMD_DEV_PATH|$CMD_GET|$CMD_READ|$CMD_SET)$/){
     die "ERROR: must set LED_NAME for $cmd\n" if not defined $ledName;
+    $dev = getDeviceByLEDName $ledName;
+    die "ERROR: could not find $ledName in $LED_DIR\n" if not defined $dev;
   }else{
     die "ERROR: cannot set LED_NAME for $cmd\n" if defined $ledName;
   }
@@ -153,25 +156,15 @@ sub main(@){
     my @ledNames = getLEDNames();
     print "@ledNames\n";
   }elsif($cmd eq $CMD_DEV_PATH){
-    my $dev = getDeviceByLEDName $ledName;
-    die "ERROR: could not find $ledName in $LED_DIR\n" if not defined $dev;
     print "$dev\n";
   }elsif($cmd eq $CMD_GET){
-    my $dev = getDeviceByLEDName $ledName;
-    die "ERROR: could not find $ledName in $LED_DIR\n" if not defined $dev;
     my $value = readDev $dev;
-
     print "LED $ledName: $value\n";
   }elsif($cmd eq $CMD_READ){
-    my $dev = getDeviceByLEDName $ledName;
-    die "ERROR: could not find $ledName in $LED_DIR\n" if not defined $dev;
     my $value = readDev $dev;
-
     print "$value\n";
   }elsif($cmd eq $CMD_SET){
     ensureRoot();
-    my $dev = getDeviceByLEDName $ledName;
-    die "ERROR: could not find $ledName in $LED_DIR\n" if not defined $dev;
     my $oldValue = readDev $dev;
 
     if(not defined $brightness){
