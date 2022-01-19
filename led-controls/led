@@ -41,6 +41,7 @@ my $usage = "Usage:
 
   $EXEC LED_NAME
   $EXEC LED_NAME --toggle|-t|toggle
+  $EXEC LED_NAME --set|-s|set
     (this is the default command)
     similar to:
       [[ `$EXEC LED_NAME --get` =~ '0' ]] && val=1 || val=0
@@ -73,10 +74,9 @@ my $CMD_LIST_LEDS = "list-leds";
 my $CMD_DEV_PATH = "dev-path";
 my $CMD_GET = "get";
 my $CMD_SET = "set";
-my $CMD_TOGGLE = "toggle";
 
 sub main(@){
-  my $cmd = $CMD_TOGGLE;
+  my $cmd = $CMD_SET;
   my $ledName = undef;
   my $brightness = undef;
   while(@_ > 0){
@@ -92,6 +92,9 @@ sub main(@){
       $cmd = $CMD_GET;
     }elsif($arg =~ /^(--set|-s|set)$/){
       $cmd = $CMD_SET;
+    }elsif($arg =~ /^(--toggle|-t|toggle)$/){
+      $cmd = $CMD_SET;
+      $brightness = undef;
     }elsif($arg =~ /^(--on|on)$/){
       $cmd = $CMD_SET;
       $brightness = 1;
@@ -103,8 +106,6 @@ sub main(@){
       die "ERROR: duplicate BRIGHTNESS $val + $brightness\n" if defined $brightness;
       $brightness = $val;
       $cmd = $CMD_SET;
-    }elsif($arg =~ /^(--toggle|-t|toggle)$/){
-      $cmd = $CMD_TOGGLE;
     }elsif($arg =~ /^([a-zA-Z0-9_][a-zA-Z0-9:_\\-]*)$/){
       die "ERROR: duplicate LED_NAME $arg + $ledName\n" if defined $ledName;
       $ledName = $1;
@@ -113,15 +114,13 @@ sub main(@){
     }
   }
 
-  if($cmd =~ /^($CMD_DEV_PATH|$CMD_GET|$CMD_SET|$CMD_TOGGLE)$/){
+  if($cmd =~ /^($CMD_DEV_PATH|$CMD_GET|$CMD_SET)$/){
     die "ERROR: must set LED_NAME for $cmd\n" if not defined $ledName;
   }else{
     die "ERROR: cannot set LED_NAME for $cmd\n" if defined $ledName;
   }
 
-  if($cmd =~ /^($CMD_SET)$/){
-    die "ERROR: missing BRIGHTNESS for $cmd\n" if not defined $brightness;
-  }else{
+  if($cmd !~ /^($CMD_SET)$/){
     die "ERROR: cannot set BRIGHTNESS for $cmd\n" if defined $brightness;
   }
 
@@ -138,13 +137,13 @@ sub main(@){
     my $value = readDev $dev;
 
     print "LED $ledName: $value\n";
-  }elsif($cmd eq $CMD_SET or $cmd eq $CMD_TOGGLE){
+  }elsif($cmd eq $CMD_SET){
     ensureRoot();
     my $dev = getDeviceByLEDName $ledName;
     die "ERROR: could not find $ledName in $LED_DIR\n" if not defined $dev;
     my $oldValue = readDev $dev;
 
-    if($cmd eq $CMD_TOGGLE){
+    if(not defined $brightness){
       $brightness = $oldValue == 0 ? 1 : 0;
     }
 
