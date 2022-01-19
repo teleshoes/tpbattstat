@@ -53,6 +53,11 @@ my $usage = "Usage:
   $EXEC LED_NAME --off|off
     same as: $EXEC LED_NAME --set 0
 
+  BRIGHTNESS
+    any non-negative integer
+    0 usually means off
+    for on/off LEDs, 1 usually means on
+
   LED_NAME
     -must be [a-zA-Z0-9_][a-zA-Z0-9:_\\-]*
       -can contain only letters, numbers, colons, underscores or hyphens
