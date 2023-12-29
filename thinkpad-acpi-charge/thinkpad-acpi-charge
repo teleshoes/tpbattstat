@@ -1,0 +1,116 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use File::Basename qw(basename);
+
+my $EXEC = basename $0;
+
+my $FIELD_START_THRESHOLD = "charge_control_start_threshold";
+my $FIELD_STOP_THRESHOLD = "charge_control_end_threshold";
+my $FIELD_CHARGE_BEHAVIOUR = "charge_behaviour";
+
+my $USAGE = "Usage:
+  $EXEC -h | --help
+    show this message
+
+  $EXEC --start BATTERY_ID
+    read START_THRESHOLD from:
+      /sys/class/power_supply/BAT<BATTERY_ID>/charge_control_start_threshold
+
+  $EXEC --start BATTERY_ID START_THRESHOLD
+    write START_THRESHOLD from:
+      /sys/class/power_supply/BAT<BATTERY_ID>/charge_control_start_threshold
+
+  $EXEC --stop BATTERY_ID
+    read STOP_THRESHOLD from:
+      /sys/class/power_supply/BAT<BATTERY_ID>/charge_control_end_threshold
+
+  $EXEC --stop BATTERY_ID STOP_THRESHOLD
+    read STOP_THRESHOLD from:
+      /sys/class/power_supply/BAT<BATTERY_ID>/charge_control_end_threshold
+
+  $EXEC --charge BATTERY_ID
+    read CHARGE_BEHAVIOUR from:
+      /sys/class/power_supply/BAT<BATTERY_ID>/charge_behaviour
+
+  $EXEC --charge BATTERY_ID CHARGE_BEHAVIOUR
+    write CHARGE_BEHAVIOUR to:
+      /sys/class/power_supply/BAT<BATTERY_ID>/charge_behaviour
+
+  BATTERY_ID:         0 | 1 | 2 | 3
+  CHARGE_BEHAVIOUR:   auto | inhibit-charge | force-discharge
+  START_THRESHOLD:    integer between 0 and 100
+  STOP_THRESHOLD:     integer between 0 and 100
+";
+
+sub main(@){
+  my $field = undef;
+  my $battID = undef;
+  my $value = undef;
+
+  while(@_ > 0){
+    my $arg = shift @_;
+    if($arg =~ /^(-h|--help)$/){
+      print $USAGE;
+      exit 0;
+    }elsif($arg =~ /^(--start)$/){
+      $field = $FIELD_START_THRESHOLD;
+    }elsif($arg =~ /^(--stop)$/){
+      $field = $FIELD_STOP_THRESHOLD;
+    }elsif($arg =~ /^(--charge)$/){
+      $field = $FIELD_CHARGE_BEHAVIOUR;
+    }elsif($arg =~ /^(0|1|2|3)$/ and not defined $battID and not defined $value){
+      $battID = $arg;
+    }elsif($arg =~ /^(auto|inhibit-charge|force-discharge)$/){
+      $value = $arg;
+    }elsif($arg =~ /^(\d|\d\d|100)$/ and defined $battID and not defined $value){
+      $value = $arg;
+    }else{
+      die "$USAGE\nERROR: unknown arg $arg\n";
+    }
+  }
+
+  if(not defined $field){
+    die "$USAGE\nERROR: missing --start/--stop/--charge\n";
+  }elsif(not defined $battID or $battID !~ /^\d+$/){
+    die "$USAGE\nERROR: missing/invalid BATTERY_ID\n";
+  }elsif(defined $value and $value !~ /^(\d+|auto|inhibit-charge|force-discharge)$/){
+    die "$USAGE\nERROR: invalid VALUE\n";
+  }
+
+  my $dev = "/sys/class/power_supply/BAT${battID}/${field}";
+
+  if(defined $value){
+    getRoot(@ARGV);
+  }
+
+  if(defined $value){
+    writeFile($dev, $value);
+  }else{
+    print readFile($dev);
+  }
+}
+
+sub readFile($){
+  my ($file) = @_;
+  open FH, "< $file" or die "Could not read $file\n";
+  my $content = join '', <FH>;
+  close FH;
+  return $content;
+}
+
+sub writeFile($$){
+  my ($file, $contents) = @_;
+  open FH, "> $file" or die "Could not write $file\n";
+  print FH $contents;
+  close FH;
+}
+
+sub getRoot(@){
+  if(`whoami` ne "root\n"){
+    exec "sudo", $0, @_;
+    die "ERROR: could not get root\n";
+  }
+}
+
+&main(@ARGV);
