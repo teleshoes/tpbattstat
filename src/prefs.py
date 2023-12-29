@@ -44,7 +44,7 @@ def getPrefs():
   Pref("interface", "enum", "SMAPI",
     "Battery info interface (smapi/acpi)",
     Interface),
-  Pref("balanceInterface", "enum", "SMAPI",
+  Pref("balanceInterface", "enum", "THINKPAD_ACPI",
     "Interface for balancing batteries",
     BalanceInterface),
 
