@@ -23,6 +23,12 @@ echo
 sudo ./install-smapi-battaccess.sh
 cd ../
 
+cd thinkpad-acpi-charge
+echo installing thinkpad-acpi-charge
+echo
+sudo ./install-thinkpad-acpi-charge.sh
+cd ../
+
 cd icons
 echo copying icons
 echo
