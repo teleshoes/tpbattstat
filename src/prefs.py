@@ -258,7 +258,6 @@ def getPrefsLongDescriptions():
         read values from /sys/devices/platform/smapi
       acpi_old:
         read values from /proc/acpi/battery
-      NOTE: power_now only works in smapi
     """,
     "ledPatternsCharging": ledDescription,
     "ledPatternsDischarging": ledDescription,
