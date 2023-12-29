@@ -23,8 +23,22 @@ from prefs import DischargeStrategy, ChargeStrategy, BalanceInterface
 import sys
 from subprocess import Popen
 
+CHARGE_BEHAVIOUR_AUTO = 'auto'
+CHARGE_BEHAVIOUR_INHIBIT_CHARGE = 'inhibit-charge'
+CHARGE_BEHAVIOUR_FORCE_DISCHARGE = 'force-discharge'
+
+THINKPAD_ACPI_CHARGE = '/usr/bin/thinkpad-acpi-charge'
 TPACPI_BAT = 'tpacpi-bat'
 SMAPI_BATTACCESS = '/usr/bin/smapi-battaccess'
+
+def set_thinkpad_acpi_charge_behaviour(batt_id, val):
+  try:
+    sys.stderr.write("setting BAT" + str(batt_id) + "/charge_behaviour => " + val + "\n")
+    p = Popen([THINKPAD_ACPI_CHARGE, '--charge', str(batt_id), val])
+    p.wait()
+  except:
+    msg = 'Could not set charge_behaviour=' + val + ' on bat ' + str(batt_id)
+    sys.stderr.write(msg + "\n")
 
 def smapi_set(batt_id, prop, val):
   try:
@@ -59,14 +73,20 @@ class BattBalance():
     charge0 = self.battStatus.batt0.isCharging()
     charge1 = self.battStatus.batt1.isCharging()
     if batt_id == 0 and (previnhib0 or (not charge0 and not previnhib1)):
-      if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+      if self.prefs['balanceInterface'] == BalanceInterface.THINKPAD_ACPI:
+        set_thinkpad_acpi_charge_behaviour(1, CHARGE_BEHAVIOUR_INHIBIT_CHARGE)
+        set_thinkpad_acpi_charge_behaviour(0, CHARGE_BEHAVIOUR_AUTO)
+      elif self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
         smapi_set(1, 'inhibit_charge_minutes', '1')
         smapi_set(0, 'inhibit_charge_minutes', '0')
       elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
         tpacpi_set(2, 'IC', '1')
         tpacpi_set(1, 'IC', '0')
     elif batt_id == 1 and (previnhib1 or (not charge1 and not previnhib0)):
-      if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+      if self.prefs['balanceInterface'] == BalanceInterface.THINKPAD_ACPI:
+        set_thinkpad_acpi_charge_behaviour(0, CHARGE_BEHAVIOUR_INHIBIT_CHARGE)
+        set_thinkpad_acpi_charge_behaviour(1, CHARGE_BEHAVIOUR_AUTO)
+      elif self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
         smapi_set(0, 'inhibit_charge_minutes', '1')
         smapi_set(1, 'inhibit_charge_minutes', '0')
       elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
@@ -88,12 +108,16 @@ class BattBalance():
     strategy = self.prefs['chargeStrategy']
     if should_not_inhibit or strategy == ChargeStrategy.SYSTEM:
       if b0.isChargeInhibited():
-        if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+        if self.prefs['balanceInterface'] == BalanceInterface.THINKPAD_ACPI:
+          set_thinkpad_acpi_charge_behaviour(0, CHARGE_BEHAVIOUR_AUTO)
+        elif self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
           smapi_set(0, 'inhibit_charge_minutes', '0')
         elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
           tpacpi_set(1, "IC", 0)
       if b1.isChargeInhibited():
-        if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+        if self.prefs['balanceInterface'] == BalanceInterface.THINKPAD_ACPI:
+          set_thinkpad_acpi_charge_behaviour(1, CHARGE_BEHAVIOUR_AUTO)
+        elif self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
           smapi_set(1, 'inhibit_charge_minutes', '0')
         elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
           tpacpi_set(2, "IC", 0)
@@ -164,7 +188,12 @@ class BattBalance():
     prevforce1 = b1.isForceDischarge()
 
     if prevforce0 != force0 or prevforce1 != force1:
-      if self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
+      if self.prefs['balanceInterface'] == BalanceInterface.TPACPI:
+        set_thinkpad_acpi_charge_behaviour(0,
+          CHARGE_BEHAVIOUR_FORCE_DISCHARGE if force0 else CHARGE_BEHAVIOUR_AUTO)
+        set_thinkpad_acpi_charge_behaviour(1,
+          CHARGE_BEHAVIOUR_FORCE_DISCHARGE if force1 else CHARGE_BEHAVIOUR_AUTO)
+      elif self.prefs['balanceInterface'] == BalanceInterface.SMAPI:
         smapi_set(0, 'force_discharge', '1' if force0 else '0')
         smapi_set(1, 'force_discharge', '1' if force1 else '0')
       elif self.prefs['balanceInterface'] == BalanceInterface.TPACPI:

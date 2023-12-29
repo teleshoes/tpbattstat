@@ -34,7 +34,7 @@ State = enum('CHARGING', 'DISCHARGING', 'IDLE')
 DischargeStrategy = enum('SYSTEM', 'LEAPFROG', 'CHASING')
 ChargeStrategy = enum('SYSTEM', 'LEAPFROG', 'CHASING', 'BRACKETS')
 Interface = enum('ACPI', 'SMAPI', 'ACPI_OLD')
-BalanceInterface = enum('SMAPI', 'TPACPI')
+BalanceInterface = enum('THINKPAD_ACPI', 'SMAPI', 'TPACPI')
 PowerUsage = enum('NOW', 'AVERAGE', 'OFF')
 
 def getPrefs():
