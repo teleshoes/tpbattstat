@@ -13,6 +13,9 @@ my $FIELD_START_THRESHOLD = "charge_control_start_threshold";
 my $FIELD_STOP_THRESHOLD = "charge_control_end_threshold";
 my $FIELD_CHARGE_BEHAVIOUR = "charge_behaviour";
 
+my $MODE_READ_DEV = "read";
+my $MODE_WRITE_DEV = "write";
+
 my $USAGE = "Usage:
   $EXEC -h | --help
     show this message
@@ -48,6 +51,7 @@ my $USAGE = "Usage:
 ";
 
 sub main(@){
+  my $mode = undef;
   my $field = undef;
   my $battID = undef;
   my $value = undef;
@@ -74,24 +78,29 @@ sub main(@){
     }
   }
 
-  if(not defined $field){
+  if(defined $battID and defined $field and not defined $value){
+    $mode = $MODE_READ_DEV;
+  }elsif(defined $battID and defined $field and defined $value){
+    $mode = $MODE_WRITE_DEV;
+  }elsif(not defined $field){
     die "$USAGE\nERROR: missing --start/--stop/--charge\n";
   }elsif(not defined $battID or $battID !~ /^\d+$/){
     die "$USAGE\nERROR: missing/invalid BATTERY_ID\n";
   }elsif(defined $value and $value !~ /^(\d+|auto|inhibit-charge|force-discharge)$/){
     die "$USAGE\nERROR: invalid VALUE\n";
+  }else{
+    die "$USAGE\nERROR: unknown mode\n";
   }
 
-  my $dev = "/sys/class/power_supply/BAT${battID}/${field}";
-
-  if(defined $value){
+  if($mode eq $MODE_READ_DEV){
+    my $dev = "/sys/class/power_supply/BAT${battID}/${field}";
+    print readFile($dev);
+  }elsif($mode eq $MODE_WRITE_DEV){
+    my $dev = "/sys/class/power_supply/BAT${battID}/${field}";
     getRoot(@ARGV);
-  }
-
-  if(defined $value){
     writeFile($dev, $value);
   }else{
-    print readFile($dev);
+    die "ERROR: unknown mode $mode\n";
   }
 }
 
