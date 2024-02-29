@@ -3,6 +3,10 @@ use strict;
 use warnings;
 use File::Basename qw(basename);
 
+sub readFile($);
+sub writeFile($$);
+sub getRoot(@);
+
 my $EXEC = basename $0;
 
 my $FIELD_START_THRESHOLD = "charge_control_start_threshold";
