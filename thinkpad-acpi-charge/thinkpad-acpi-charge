@@ -13,12 +13,18 @@ my $FIELD_START_THRESHOLD = "charge_control_start_threshold";
 my $FIELD_STOP_THRESHOLD = "charge_control_end_threshold";
 my $FIELD_CHARGE_BEHAVIOUR = "charge_behaviour";
 
+my $MODE_GET_INFO = "get-info";
 my $MODE_READ_DEV = "read";
 my $MODE_WRITE_DEV = "write";
 
 my $USAGE = "Usage:
   $EXEC -h | --help
     show this message
+
+  $EXEC
+  $EXEC -g | --get
+    print one per line:
+    BAT<BATTERY_ID>: <START> - <STOP> <CHARGE_BEHAVIOR>
 
   $EXEC --start BATTERY_ID
     read START_THRESHOLD from:
@@ -61,6 +67,8 @@ sub main(@){
     if($arg =~ /^(-h|--help)$/){
       print $USAGE;
       exit 0;
+    }elsif($arg =~ /^(-g|--get)$/){
+      $mode = $MODE_GET_INFO;
     }elsif($arg =~ /^(--start)$/){
       $field = $FIELD_START_THRESHOLD;
     }elsif($arg =~ /^(--stop)$/){
@@ -82,6 +90,8 @@ sub main(@){
     $mode = $MODE_READ_DEV;
   }elsif(defined $battID and defined $field and defined $value){
     $mode = $MODE_WRITE_DEV;
+  }elsif(not defined $battID and not defined $field and not defined $value){
+    $mode = $MODE_GET_INFO;
   }elsif(not defined $field){
     die "$USAGE\nERROR: missing --start/--stop/--charge\n";
   }elsif(not defined $battID or $battID !~ /^\d+$/){
@@ -92,7 +102,22 @@ sub main(@){
     die "$USAGE\nERROR: unknown mode\n";
   }
 
-  if($mode eq $MODE_READ_DEV){
+  if($mode eq $MODE_GET_INFO){
+    my @dirs = grep {-d $_} glob "/sys/class/power_supply/BAT*";
+    for my $dir(@dirs){
+      my $id = $1 if $dir =~ /BAT(\d+)\/?$/;
+      my $start = readFile "$dir/$FIELD_START_THRESHOLD";
+      chomp $start;
+      my $stop = readFile "$dir/$FIELD_STOP_THRESHOLD";
+      chomp $stop;
+      my $charge = readFile "$dir/$FIELD_CHARGE_BEHAVIOUR";
+      chomp $charge;
+      if($charge =~ /(\[[a-zA-Z0-9_\-]+\])/){
+        $charge = $1;
+      }
+      print "BAT$id: $start - $stop $charge\n";
+    }
+  }elsif($mode eq $MODE_READ_DEV){
     my $dev = "/sys/class/power_supply/BAT${battID}/${field}";
     print readFile($dev);
   }elsif($mode eq $MODE_WRITE_DEV){
