@@ -4,8 +4,7 @@ use warnings;
 use File::Basename qw(basename);
 
 sub readFile($);
-sub writeFile($$);
-sub getRoot(@);
+sub writeFileSudo($$);
 
 my $EXEC = basename $0;
 
@@ -122,8 +121,7 @@ sub main(@){
     print readFile($dev);
   }elsif($mode eq $MODE_WRITE_DEV){
     my $dev = "/sys/class/power_supply/BAT${battID}/${field}";
-    getRoot(@ARGV);
-    writeFile($dev, $value);
+    writeFileSudo($dev, "$value\n");
   }else{
     die "ERROR: unknown mode $mode\n";
   }
@@ -137,18 +135,15 @@ sub readFile($){
   return $content;
 }
 
-sub writeFile($$){
+sub writeFileSudo($$){
   my ($file, $contents) = @_;
-  open FH, "> $file" or die "Could not write $file\n";
+  if(`whoami` eq "root\n"){
+    open FH, "> $file" or die "ERROR: Could not write $file\n$!\n";
+  }else{
+    open FH, "|-", "sudo", "tee", $file or die "ERROR: Could not write $file\n$!\n";
+  }
   print FH $contents;
   close FH;
-}
-
-sub getRoot(@){
-  if(`whoami` ne "root\n"){
-    exec "sudo", $0, @_;
-    die "ERROR: could not get root\n";
-  }
 }
 
 &main(@ARGV);
