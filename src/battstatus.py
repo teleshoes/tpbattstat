@@ -291,14 +291,14 @@ class BattInfoAcpiOld(BattInfoBase):
     return self.acpiDir() + '/info'
   def parseAcpi(self, fileContent):
     d = dict()
-    keyValRe = re.compile('([a-zA-Z0-9 ]+):\s*([a-zA-Z0-9 ]+)')
+    keyValRe = re.compile(r'([a-zA-Z0-9 ]+):\s*([a-zA-Z0-9 ]+)')
     for line in fileContent.splitlines():
       m = keyValRe.match(line)
       if m != None:
         d[m.group(1)] = m.group(2)
     return d
   def getValueAndUnit(self, s):
-    m = re.compile('(\d+)\s*([a-zA-Z]*)').match(s)
+    m = re.compile(r'(\d+)\s*([a-zA-Z]*)').match(s)
     if m == None:
       return None
     else:
